@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { User } from '../types'
-import { authService } from '../services/directus'
+import { authService, usersService } from '../services/supabase'
 
 interface AuthState {
   user: User | null
@@ -24,9 +24,12 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true })
         try {
-          await authService.login(email, password)
-          const user = await authService.getCurrentUser()
-          set({ user, isAuthenticated: true, isLoading: false })
+          const { user: authUser } = await authService.signIn(email, password)
+          if (authUser) {
+            // Get full user profile from users table
+            const userProfile = await usersService.getProfile(authUser.id)
+            set({ user: userProfile as User, isAuthenticated: true, isLoading: false })
+          }
         } catch (error) {
           set({ isLoading: false })
           throw error
@@ -36,10 +39,15 @@ export const useAuthStore = create<AuthState>()(
       register: async (email: string, password: string, userData: any) => {
         set({ isLoading: true })
         try {
-          await authService.register(email, password, userData)
-          await authService.login(email, password)
-          const user = await authService.getCurrentUser()
-          set({ user, isAuthenticated: true, isLoading: false })
+          const { user: authUser } = await authService.signUp(email, password, userData)
+          if (authUser) {
+            // Auto sign in after registration
+            const { user: signedInUser } = await authService.signIn(email, password)
+            if (signedInUser) {
+              const userProfile = await usersService.getProfile(signedInUser.id)
+              set({ user: userProfile as User, isAuthenticated: true, isLoading: false })
+            }
+          }
         } catch (error) {
           set({ isLoading: false })
           throw error
@@ -49,7 +57,7 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         set({ isLoading: true })
         try {
-          await authService.logout()
+          await authService.signOut()
           set({ user: null, isAuthenticated: false, isLoading: false })
         } catch (error) {
           set({ isLoading: false })
@@ -64,8 +72,13 @@ export const useAuthStore = create<AuthState>()(
       checkAuth: async () => {
         set({ isLoading: true })
         try {
-          const user = await authService.getCurrentUser()
-          set({ user, isAuthenticated: !!user, isLoading: false })
+          const authUser = await authService.getCurrentUser()
+          if (authUser) {
+            const userProfile = await usersService.getProfile(authUser.id)
+            set({ user: userProfile as User, isAuthenticated: true, isLoading: false })
+          } else {
+            set({ user: null, isAuthenticated: false, isLoading: false })
+          }
         } catch (error) {
           set({ user: null, isAuthenticated: false, isLoading: false })
         }

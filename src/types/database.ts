@@ -1,0 +1,277 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export interface Database {
+  public: {
+    Tables: {
+      users: {
+        Row: {
+          id: string
+          email: string
+          first_name: string | null
+          last_name: string | null
+          phone: string | null
+          role: 'beneficiary' | 'donor' | 'volunteer' | 'shelter' | 'ngo' | 'admin'
+          avatar: string | null
+          rating: number | null
+          verified: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
+          role?: 'beneficiary' | 'donor' | 'volunteer' | 'shelter' | 'ngo' | 'admin'
+          avatar?: string | null
+          rating?: number | null
+          verified?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
+          role?: 'beneficiary' | 'donor' | 'volunteer' | 'shelter' | 'ngo' | 'admin'
+          avatar?: string | null
+          rating?: number | null
+          verified?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      locations: {
+        Row: {
+          id: string
+          address: string
+          city: string
+          region: string
+          country: string
+          latitude: number
+          longitude: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          address: string
+          city: string
+          region: string
+          country?: string
+          latitude: number
+          longitude: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          address?: string
+          city?: string
+          region?: string
+          country?: string
+          latitude?: number
+          longitude?: number
+          created_at?: string
+        }
+      }
+      help_requests: {
+        Row: {
+          id: string
+          title: string
+          description: string
+          category: 'food' | 'clothing' | 'medicine' | 'household' | 'construction' | 'transport' | 'medical_service' | 'legal_service' | 'psychological_service' | 'animal_care'
+          status: 'pending' | 'approved' | 'in_progress' | 'completed' | 'rejected'
+          priority: 'low' | 'medium' | 'high' | 'urgent'
+          beneficiary_id: string
+          location_id: string
+          images: string[] | null
+          created_at: string
+          updated_at: string
+          completed_at: string | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          description: string
+          category: 'food' | 'clothing' | 'medicine' | 'household' | 'construction' | 'transport' | 'medical_service' | 'legal_service' | 'psychological_service' | 'animal_care'
+          status?: 'pending' | 'approved' | 'in_progress' | 'completed' | 'rejected'
+          priority?: 'low' | 'medium' | 'high' | 'urgent'
+          beneficiary_id: string
+          location_id: string
+          images?: string[] | null
+          created_at?: string
+          updated_at?: string
+          completed_at?: string | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string
+          category?: 'food' | 'clothing' | 'medicine' | 'household' | 'construction' | 'transport' | 'medical_service' | 'legal_service' | 'psychological_service' | 'animal_care'
+          status?: 'pending' | 'approved' | 'in_progress' | 'completed' | 'rejected'
+          priority?: 'low' | 'medium' | 'high' | 'urgent'
+          beneficiary_id?: string
+          location_id?: string
+          images?: string[] | null
+          created_at?: string
+          updated_at?: string
+          completed_at?: string | null
+        }
+      }
+      shelters: {
+        Row: {
+          id: string
+          name: string
+          description: string
+          type: 'animal' | 'human'
+          location_id: string
+          contact_email: string
+          contact_phone: string
+          images: string[] | null
+          verified: boolean
+          rating: number | null
+          manager_id: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description: string
+          type: 'animal' | 'human'
+          location_id: string
+          contact_email: string
+          contact_phone: string
+          images?: string[] | null
+          verified?: boolean
+          rating?: number | null
+          manager_id: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string
+          type?: 'animal' | 'human'
+          location_id?: string
+          contact_email?: string
+          contact_phone?: string
+          images?: string[] | null
+          verified?: boolean
+          rating?: number | null
+          manager_id?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      responses: {
+        Row: {
+          id: string
+          request_id: string
+          donor_id: string
+          message: string
+          status: 'pending' | 'accepted' | 'rejected'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          request_id: string
+          donor_id: string
+          message: string
+          status?: 'pending' | 'accepted' | 'rejected'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          request_id?: string
+          donor_id?: string
+          message?: string
+          status?: 'pending' | 'accepted' | 'rejected'
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      achievements: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          description: string
+          icon: string
+          earned_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          description: string
+          icon: string
+          earned_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          description?: string
+          icon?: string
+          earned_at?: string
+        }
+      }
+      emergencies: {
+        Row: {
+          id: string
+          title: string
+          description: string
+          type: 'natural_disaster' | 'accident' | 'evacuation'
+          location_id: string
+          active: boolean
+          priority_boost: number
+          created_at: string
+          resolved_at: string | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          description: string
+          type: 'natural_disaster' | 'accident' | 'evacuation'
+          location_id: string
+          active?: boolean
+          priority_boost?: number
+          created_at?: string
+          resolved_at?: string | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string
+          type?: 'natural_disaster' | 'accident' | 'evacuation'
+          location_id?: string
+          active?: boolean
+          priority_boost?: number
+          created_at?: string
+          resolved_at?: string | null
+        }
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+  }
+}

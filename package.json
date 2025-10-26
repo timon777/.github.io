@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@directus/sdk": "^17.0.0",
+    "@supabase/supabase-js": "^2.39.0",
     "@tanstack/react-query": "^5.56.2",
     "leaflet": "^1.9.4",
     "react": "^18.3.1",

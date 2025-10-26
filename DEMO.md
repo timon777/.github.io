@@ -119,9 +119,9 @@ npm run preview
 - `src/pages/VolunteersPage.tsx` - примеры волонтёров
 - `src/pages/ProfilePage.tsx` - статистика пользователя
 
-## 🔌 Интеграция с Directus
+## 🔌 Интеграция с Supabase
 
-Готовые сервисы для работы с API в `src/services/directus.ts`:
+Готовые сервисы для работы с API в `src/services/supabase.ts`:
 
 ```typescript
 // Аутентификация
@@ -198,11 +198,11 @@ dist/
 - Zustand
 - React Hook Form
 - Leaflet + React-Leaflet
-- Directus SDK
+- Supabase SDK
 
 ## 🚀 Следующие шаги
 
-1. **Настроить Directus бэкенд**
+1. **Настроить Supabase бэкенд**
    - Создать коллекции (users, help_requests, shelters, etc.)
    - Настроить роли и права доступа
    - Добавить поля согласно типам в `src/types/index.ts`

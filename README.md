@@ -25,14 +25,14 @@
 - **Leaflet & React-Leaflet** - Интерактивные карты
 
 ### Backend
-- **Directus** - Headless CMS и API
+- **Supabase** - PostgreSQL база данных, аутентификация, storage
 
 ## 📦 Установка и запуск
 
 ### Предварительные требования
 - Node.js 18+
 - npm или yarn
-- Directus сервер (для бэкенда)
+- Supabase аккаунт (бесплатный)
 
 ### Установка зависимостей
 
@@ -51,10 +51,13 @@ cp .env.example .env
 Отредактируйте `.env`:
 
 ```env
-VITE_DIRECTUS_URL=http://your-directus-url:8055
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
 VITE_APP_NAME=Úmit
 VITE_APP_URL=http://localhost:3000
 ```
+
+> См. [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) для подробной настройки бэкенда
 
 ### Запуск в режиме разработки
 
@@ -96,7 +99,7 @@ umit-platform/
 │   │   ├── ProfilePage.tsx
 │   │   └── MapPage.tsx
 │   ├── services/        # API сервисы
-│   │   └── directus.ts
+│   │   └── supabase.ts
 │   ├── stores/          # Zustand stores
 │   │   └── authStore.ts
 │   ├── types/           # TypeScript типы
@@ -217,11 +220,11 @@ git subtree push --prefix dist origin gh-pages
 ## 📝 Roadmap
 
 - [x] MVP фронтенд
-- [x] Интеграция с Directus
+- [x] Интеграция с Supabase
 - [x] Система аутентификации
 - [x] Основные страницы
-- [ ] Интеграция с реальным Directus бэкендом
-- [ ] Загрузка изображений
+- [ ] Интеграция с реальным Supabase бэкендом
+- [ ] Загрузка изображений через Supabase Storage
 - [ ] Real-time уведомления
 - [ ] Мобильное приложение
 - [ ] Блокчейн интеграция (будущее)

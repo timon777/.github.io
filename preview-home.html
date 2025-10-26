@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Úmit - Превью главной страницы</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #f9fafb; }
+
+        /* Header */
+        .header { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 50; }
+        .header-content { max-width: 1280px; margin: 0 auto; padding: 0 1rem; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #0ea5e9, #d946ef); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px; }
+        .logo-text { font-size: 24px; font-weight: bold; color: #111827; }
+        .nav { display: flex; gap: 1.5rem; }
+        .nav a { color: #374151; text-decoration: none; transition: color 0.2s; }
+        .nav a:hover { color: #0ea5e9; }
+        .auth-buttons { display: flex; gap: 1rem; }
+        .btn { padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.2s; }
+        .btn-primary { background: #0ea5e9; color: white; border: none; cursor: pointer; }
+        .btn-primary:hover { background: #0284c7; }
+        .btn-outline { background: transparent; color: #0ea5e9; border: 2px solid #0ea5e9; }
+
+        /* Hero */
+        .hero { background: linear-gradient(135deg, #0ea5e9, #d946ef); color: white; padding: 5rem 1rem; }
+        .hero-content { max-width: 768px; margin: 0 auto; text-align: center; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1.5rem; }
+        .hero p { font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9; }
+        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn-white { background: white; color: #0ea5e9; }
+        .btn-white:hover { background: #f0f9ff; }
+        .btn-outline-white { background: transparent; border: 2px solid white; color: white; }
+        .btn-outline-white:hover { background: rgba(255,255,255,0.1); }
+
+        /* Features */
+        .section { padding: 4rem 1rem; }
+        .container { max-width: 1280px; margin: 0 auto; }
+        .section-title { font-size: 2rem; text-align: center; margin-bottom: 3rem; color: #111827; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; transition: box-shadow 0.2s; }
+        .card:hover { box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card-icon { width: 64px; height: 64px; margin: 0 auto 1rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .icon-primary { background: #e0f2fe; color: #0ea5e9; }
+        .icon-secondary { background: #fae8ff; color: #d946ef; }
+        .icon-success { background: #d1fae5; color: #10b981; }
+        .card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; color: #111827; }
+        .card p { color: #6b7280; }
+
+        /* Categories */
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+        .category-card { background: white; padding: 2rem 1rem; border-radius: 12px; text-align: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s; }
+        .category-card:hover { box-shadow: 0 10px 15px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .category-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .category-name { font-weight: 600; color: #111827; }
+
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; }
+        .stat-value { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .stat-primary { color: #0ea5e9; }
+        .stat-secondary { color: #d946ef; }
+        .stat-success { color: #10b981; }
+        .stat-warning { color: #f59e0b; }
+        .stat-label { color: #6b7280; }
+
+        /* CTA */
+        .cta { background: linear-gradient(135deg, #0ea5e9, #d946ef); color: white; padding: 4rem 1rem; text-align: center; }
+        .cta h2 { font-size: 2rem; margin-bottom: 1rem; }
+        .cta p { font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9; }
+
+        /* Footer */
+        .footer { background: #111827; color: white; padding: 3rem 1rem; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1280px; margin: 0 auto 2rem; }
+        .footer h3 { margin-bottom: 1rem; font-size: 1.125rem; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 0.5rem; }
+        .footer-links a { color: #9ca3af; text-decoration: none; font-size: 0.875rem; }
+        .footer-links a:hover { color: white; }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid #374151; color: #9ca3af; font-size: 0.875rem; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">Ú</div>
+                <span class="logo-text">Úmit</span>
+            </a>
+            <nav class="nav">
+                <a href="#requests">Запросы помощи</a>
+                <a href="#shelters">Приюты</a>
+                <a href="#volunteers">Волонтеры</a>
+                <a href="#map">Карта</a>
+            </nav>
+            <div class="auth-buttons">
+                <a href="#" class="btn btn-outline">Войти</a>
+                <a href="#" class="btn btn-primary">Регистрация</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Социальный реестр адресной помощи «Úmit»</h1>
+            <p>Реальная помощь реальным людям с полной прозрачностью — без денег, только доброта.</p>
+            <div class="hero-buttons">
+                <a href="#requests" class="btn btn-white">Смотреть запросы</a>
+                <a href="#create" class="btn btn-outline-white">Попросить помощь</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" style="background: white;">
+        <div class="container">
+            <h2 class="section-title">Возможности платформы</h2>
+            <div class="features-grid">
+                <div class="card">
+                    <div class="card-icon icon-primary">🛡️</div>
+                    <h3>Полная прозрачность</h3>
+                    <p>История каждой передачи помощи с фото и видео отчетами</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-secondary">👥</div>
+                    <h3>Единая экосистема</h3>
+                    <p>Объединяем благотворителей, НКО, государство и бизнес</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon icon-success">💰</div>
+                    <h3>Без денег</h3>
+                    <p>Только натуральная помощь: продукты, вещи, услуги</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Категории помощи</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon">🍞</div>
+                    <div class="category-name">Продукты</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">👕</div>
+                    <div class="category-name">Одежда</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">💊</div>
+                    <div class="category-name">Медикаменты</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🏠</div>
+                    <div class="category-name">Бытовая техника</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🤝</div>
+                    <div class="category-name">Услуги</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🐾</div>
+                    <div class="category-name">Животные</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="section" style="background: white;">
+        <div class="container">
+            <div class="stats-grid">
+                <div>
+                    <div class="stat-value stat-primary">1,234</div>
+                    <div class="stat-label">Запросов помощи</div>
+                </div>
+                <div>
+                    <div class="stat-value stat-secondary">567</div>
+                    <div class="stat-label">Активных волонтеров</div>
+                </div>
+                <div>
+                    <div class="stat-value stat-success">89</div>
+                    <div class="stat-label">Приютов</div>
+                </div>
+                <div>
+                    <div class="stat-value stat-warning">2,345</div>
+                    <div class="stat-label">Помощь оказана</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <h2>Присоединяйтесь к нам</h2>
+        <p>Станьте частью экосистемы добра и прозрачности</p>
+        <a href="#register" class="btn btn-white">Зарегистрироваться</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <h3>О платформе</h3>
+                <p style="color: #9ca3af; font-size: 0.875rem;">
+                    Úmit — единая экосистема адресной помощи с полной прозрачностью.
+                </p>
+            </div>
+            <div>
+                <h3>Быстрые ссылки</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Запросы помощи</a></li>
+                    <li><a href="#">Приюты</a></li>
+                    <li><a href="#">Волонтёры</a></li>
+                    <li><a href="#">Карта помощи</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3>Категории</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Продукты питания</a></li>
+                    <li><a href="#">Одежда и обувь</a></li>
+                    <li><a href="#">Медикаменты</a></li>
+                    <li><a href="#">Помощь животным</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3>Контакты</h3>
+                <ul class="footer-links">
+                    <li>Email: info@umit.kz</li>
+                    <li>Telegram: @umit_help</li>
+                    <li>8-800-XXX-XX-XX</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Úmit. Все права защищены. Платформа не работает с финансами.</p>
+        </div>
+    </footer>
+</body>
+</html>
