@@ -29,11 +29,24 @@ export default function RegistryPage() {
         return mockDonorOffers
       } catch (error) {
         // При ошибке возвращаем mock данные
-        console.warn('Failed to load offers from database, using mock data:', error)
+        if (import.meta.env.DEV) {
+          console.warn('Failed to load offers from database, using mock data:', error)
+        }
         return mockDonorOffers
       }
     },
   })
+
+  // Функция маскировки телефона
+  const maskPhone = (phone: string) => {
+    if (!phone) return ''
+    // +7 777 555 6677 -> +7 *** *** **77
+    const cleaned = phone.replace(/\D/g, '')
+    if (cleaned.length >= 4) {
+      return phone.substring(0, 3) + ' *** *** **' + phone.substring(phone.length - 2)
+    }
+    return phone
+  }
 
   const getStatusColor = (status: OfferStatus) => {
     switch (status) {
@@ -174,7 +187,7 @@ export default function RegistryPage() {
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
-                      {offer.contact_phone}
+                      <span className="text-gray-500">{maskPhone(offer.contact_phone)}</span>
                     </div>
                   )}
                 </div>
