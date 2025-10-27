@@ -1,0 +1,119 @@
+{
+  "common": {
+    "login": "Кіру",
+    "register": "Тіркелу",
+    "logout": "Шығу",
+    "profile": "Профиль",
+    "search": "Іздеу",
+    "filter": "Сүзгі",
+    "save": "Сақтау",
+    "cancel": "Болдырмау",
+    "delete": "Жою",
+    "edit": "Өңдеу",
+    "create": "Жасау",
+    "submit": "Жіберу",
+    "back": "Артқа",
+    "next": "Әрі қарай",
+    "loading": "Жүктелуде...",
+    "error": "Қате",
+    "success": "Сәтті",
+    "verified": "Верификацияланған"
+  },
+  "nav": {
+    "home": "Басты бет",
+    "requests": "Өтініштер",
+    "shelters": "Баспаналар",
+    "volunteers": "Волонтерлер",
+    "map": "Карта"
+  },
+  "home": {
+    "title": "Әлеуметтік мекенжайлы көмек тізілімі",
+    "subtitle": "Нақты адамдарға нақты көмек, толық ашықтықпен",
+    "features": "Мүмкіндіктер",
+    "howItWorks": "Қалай жұмыс істейді"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Құпия сөз",
+    "firstName": "Аты",
+    "lastName": "Тегі",
+    "phone": "Телефон",
+    "role": "Рөлі",
+    "signIn": "Кіру",
+    "signUp": "Тіркелу",
+    "dontHaveAccount": "Аккаунт жоқ па?",
+    "alreadyHaveAccount": "Аккаунт бар ма?"
+  },
+  "roles": {
+    "beneficiary": "Мұқтаж",
+    "donor": "Қайырымдылық жасаушы",
+    "volunteer": "Волонтер",
+    "shelter": "Баспана",
+    "ngo": "ҚҰ",
+    "admin": "Әкімші"
+  },
+  "categories": {
+    "food": "Азық-түлік",
+    "clothing": "Киім",
+    "medicine": "Дәрі-дәрмек",
+    "household": "Тұрмыстық техника",
+    "construction": "Құрылыс материалдары",
+    "transport": "Көлік",
+    "medical_service": "Медициналық қызметтер",
+    "legal_service": "Заң қызметтері",
+    "psychological_service": "Психологиялық көмек",
+    "animal_care": "Жануарларға көмек"
+  },
+  "priority": {
+    "low": "Төмен",
+    "medium": "Орташа",
+    "high": "Жоғары",
+    "urgent": "Шұғыл"
+  },
+  "status": {
+    "pending": "Күтуде",
+    "approved": "Бекітілді",
+    "in_progress": "Орындалуда",
+    "completed": "Аяқталды",
+    "rejected": "Қабылданбады"
+  },
+  "requests": {
+    "title": "Көмек өтініштері",
+    "createNew": "Өтініш жасау",
+    "description": "Сипаттама",
+    "category": "Санат",
+    "priority": "Басымдық",
+    "status": "Мәртебе",
+    "location": "Орналасқан жері",
+    "noRequests": "Өтініштер жоқ"
+  },
+  "shelters": {
+    "title": "Баспаналар",
+    "animal": "Жануарларға арналған",
+    "human": "Адамдарға арналған",
+    "contact": "Байланыс",
+    "noShelters": "Баспаналар жоқ"
+  },
+  "volunteers": {
+    "title": "Волонтерлер құрмет тақтасы",
+    "rating": "Рейтинг",
+    "completed": "Аяқталды",
+    "hours": "Сағат",
+    "noVolunteers": "Волонтерлер жоқ"
+  },
+  "demo": {
+    "banner": "DEMO РЕЖИМІ: Сынақ деректер қолданылады. Дерекқор қосылмаған.",
+    "switchToReal": "Нақты деректерге ауысу",
+    "switchToDemo": "Демо деректерге ауысу"
+  },
+  "footer": {
+    "about": "Платформа туралы",
+    "aboutText": "Úmit — толық ашықтықпен мекенжайлы көмектің бірыңғай экожүйесі.",
+    "quickLinks": "Жылдам сілтемелер",
+    "categories": "Көмек санаттары",
+    "contacts": "Байланыс",
+    "hotline": "Жедел желі",
+    "copyright": "Барлық құқықтар қорғалған. Платформа қаржымен жұмыс істемейді.",
+    "developedBy": "Сайтты жасаушы"
+  }
+}

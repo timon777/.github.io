@@ -1,41 +1,43 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export default function Footer() {
+  const { t } = useTranslation()
+
   return (
     <footer className="bg-gray-900 text-white mt-auto">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About */}
           <div>
-            <h3 className="text-lg font-bold mb-4">О платформе</h3>
+            <h3 className="text-lg font-bold mb-4">{t('footer.about')}</h3>
             <p className="text-gray-400 text-sm">
-              Úmit — единая экосистема адресной помощи с полной прозрачностью.
-              Реальная помощь реальным людям без денег, только доброта.
+              {t('footer.aboutText')}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Быстрые ссылки</h3>
+            <h3 className="text-lg font-bold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/requests" className="text-gray-400 hover:text-white transition-colors">
-                  Запросы помощи
+                  {t('nav.requests')}
                 </Link>
               </li>
               <li>
                 <Link to="/shelters" className="text-gray-400 hover:text-white transition-colors">
-                  Приюты
+                  {t('nav.shelters')}
                 </Link>
               </li>
               <li>
                 <Link to="/volunteers" className="text-gray-400 hover:text-white transition-colors">
-                  Доска почёта
+                  {t('nav.volunteers')}
                 </Link>
               </li>
               <li>
                 <Link to="/map" className="text-gray-400 hover:text-white transition-colors">
-                  Карта помощи
+                  {t('nav.map')}
                 </Link>
               </li>
             </ul>
@@ -43,24 +45,24 @@ export default function Footer() {
 
           {/* Categories */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Категории помощи</h3>
+            <h3 className="text-lg font-bold mb-4">{t('footer.categories')}</h3>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li>Продукты питания</li>
-              <li>Одежда и обувь</li>
-              <li>Медикаменты</li>
-              <li>Бытовая техника</li>
-              <li>Услуги и консультации</li>
-              <li>Помощь животным</li>
+              <li>{t('categories.food')}</li>
+              <li>{t('categories.clothing')}</li>
+              <li>{t('categories.medicine')}</li>
+              <li>{t('categories.household')}</li>
+              <li>{t('categories.medical_service')}</li>
+              <li>{t('categories.animal_care')}</li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Контакты</h3>
+            <h3 className="text-lg font-bold mb-4">{t('footer.contacts')}</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>Email: umit@maxico.kz</li>
               <li>Telegram: @marchenkokz</li>
-              <li>Горячая линия: 8-800-XXX-XX-XX</li>
+              <li>{t('footer.hotline')}: 8-800-XXX-XX-XX</li>
             </ul>
             <div className="mt-4 flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -82,8 +84,21 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; 2025 Úmit. Все права защищены. Платформа не работает с финансами.</p>
+        <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+          <p className="text-sm text-gray-400 mb-2">
+            &copy; 2025 Úmit. {t('footer.copyright')}
+          </p>
+          <p className="text-sm text-gray-500">
+            {t('footer.developedBy')}:{' '}
+            <a
+              href="https://maxico.kz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition-colors font-medium"
+            >
+              MAXICO
+            </a>
+          </p>
         </div>
       </div>
     </footer>

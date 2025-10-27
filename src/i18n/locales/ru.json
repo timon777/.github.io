@@ -1,0 +1,119 @@
+{
+  "common": {
+    "login": "Вход",
+    "register": "Регистрация",
+    "logout": "Выход",
+    "profile": "Профиль",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "create": "Создать",
+    "submit": "Отправить",
+    "back": "Назад",
+    "next": "Далее",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "verified": "Верифицирован"
+  },
+  "nav": {
+    "home": "Главная",
+    "requests": "Запросы",
+    "shelters": "Приюты",
+    "volunteers": "Волонтёры",
+    "map": "Карта"
+  },
+  "home": {
+    "title": "Социальный реестр адресной помощи",
+    "subtitle": "Реальная помощь реальным людям с полной прозрачностью",
+    "features": "Возможности",
+    "howItWorks": "Как это работает"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Пароль",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "phone": "Телефон",
+    "role": "Роль",
+    "signIn": "Войти",
+    "signUp": "Зарегистрироваться",
+    "dontHaveAccount": "Нет аккаунта?",
+    "alreadyHaveAccount": "Уже есть аккаунт?"
+  },
+  "roles": {
+    "beneficiary": "Нуждающийся",
+    "donor": "Благотворитель",
+    "volunteer": "Волонтёр",
+    "shelter": "Приют",
+    "ngo": "НКО",
+    "admin": "Администратор"
+  },
+  "categories": {
+    "food": "Продукты",
+    "clothing": "Одежда",
+    "medicine": "Медикаменты",
+    "household": "Бытовая техника",
+    "construction": "Стройматериалы",
+    "transport": "Транспорт",
+    "medical_service": "Медицинские услуги",
+    "legal_service": "Юридические услуги",
+    "psychological_service": "Психологическая помощь",
+    "animal_care": "Помощь животным"
+  },
+  "priority": {
+    "low": "Низкий",
+    "medium": "Средний",
+    "high": "Высокий",
+    "urgent": "Срочно"
+  },
+  "status": {
+    "pending": "Ожидает",
+    "approved": "Одобрено",
+    "in_progress": "В процессе",
+    "completed": "Завершено",
+    "rejected": "Отклонено"
+  },
+  "requests": {
+    "title": "Запросы помощи",
+    "createNew": "Создать запрос",
+    "description": "Описание",
+    "category": "Категория",
+    "priority": "Приоритет",
+    "status": "Статус",
+    "location": "Местоположение",
+    "noRequests": "Нет запросов"
+  },
+  "shelters": {
+    "title": "Приюты",
+    "animal": "Для животных",
+    "human": "Для людей",
+    "contact": "Контакты",
+    "noShelters": "Нет приютов"
+  },
+  "volunteers": {
+    "title": "Доска почёта волонтёров",
+    "rating": "Рейтинг",
+    "completed": "Завершено",
+    "hours": "Часов",
+    "noVolunteers": "Нет волонтёров"
+  },
+  "demo": {
+    "banner": "DEMO РЕЖИМ: Используются тестовые данные. База данных не подключена.",
+    "switchToReal": "Переключить на реальные данные",
+    "switchToDemo": "Переключить на демо данные"
+  },
+  "footer": {
+    "about": "О платформе",
+    "aboutText": "Úmit — единая экосистема адресной помощи с полной прозрачностью.",
+    "quickLinks": "Быстрые ссылки",
+    "categories": "Категории помощи",
+    "contacts": "Контакты",
+    "hotline": "Горячая линия",
+    "copyright": "Все права защищены. Платформа не работает с финансами.",
+    "developedBy": "Разработка сайта"
+  }
+}

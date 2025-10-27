@@ -1,7 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
+import LanguageSwitcher from './LanguageSwitcher'
+import VerifiedBadge from './VerifiedBadge'
 
 export default function Header() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, isAuthenticated, logout } = useAuthStore()
 
@@ -25,25 +29,27 @@ export default function Header() {
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             <Link to="/requests" className="text-gray-700 hover:text-primary-600 transition-colors">
-              Запросы помощи
+              {t('nav.requests')}
             </Link>
             <Link to="/shelters" className="text-gray-700 hover:text-primary-600 transition-colors">
-              Приюты
+              {t('nav.shelters')}
             </Link>
             <Link to="/volunteers" className="text-gray-700 hover:text-primary-600 transition-colors">
-              Волонтеры
+              {t('nav.volunteers')}
             </Link>
             <Link to="/map" className="text-gray-700 hover:text-primary-600 transition-colors">
-              Карта
+              {t('nav.map')}
             </Link>
           </nav>
 
-          {/* Auth buttons */}
+          {/* Auth buttons & Language Switcher */}
           <div className="flex items-center space-x-4">
+            <LanguageSwitcher />
+
             {isAuthenticated && user ? (
               <>
                 <Link to="/create-request" className="btn-primary">
-                  Создать заявку
+                  {t('requests.createNew')}
                 </Link>
                 <Link
                   to="/profile"
@@ -54,19 +60,22 @@ export default function Header() {
                       {user.first_name?.[0] || user.email[0].toUpperCase()}
                     </span>
                   </div>
-                  <span>{user.first_name || user.email}</span>
+                  <span className="flex items-center space-x-1">
+                    <span>{user.first_name || user.email}</span>
+                    <VerifiedBadge verified={user.verified || false} size="sm" />
+                  </span>
                 </Link>
                 <button onClick={handleLogout} className="btn-secondary">
-                  Выйти
+                  {t('common.logout')}
                 </button>
               </>
             ) : (
               <>
                 <Link to="/login" className="text-gray-700 hover:text-primary-600 transition-colors">
-                  Войти
+                  {t('common.login')}
                 </Link>
                 <Link to="/register" className="btn-primary">
-                  Регистрация
+                  {t('common.register')}
                 </Link>
               </>
             )}
