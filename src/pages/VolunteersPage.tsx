@@ -1,7 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { User } from '../types'
 
 export default function VolunteersPage() {
+  const { t } = useTranslation()
+
   // Mock data for top volunteers
   const mockVolunteers: (User & { helpCount: number; level: string })[] = [
     {
@@ -81,43 +84,43 @@ export default function VolunteersPage() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Доска почёта волонтёров</h1>
+          <h1 className="text-4xl font-bold mb-4">{t('volunteers.pageTitle')}</h1>
           <p className="text-xl text-gray-600">
-            Герои, которые делают мир лучше своей добротой
+            {t('volunteers.pageSubtitle')}
           </p>
         </div>
 
         {/* Level System Info */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-          <h2 className="text-2xl font-bold mb-6 text-center">Система уровней</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">{t('volunteers.levelSystem')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className={`w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-3xl`}>
                 🏅
               </div>
-              <h3 className="font-bold mb-1">Бронза</h3>
-              <p className="text-sm text-gray-600">1-10 помощей</p>
+              <h3 className="font-bold mb-1">{t('volunteers.bronze')}</h3>
+              <p className="text-sm text-gray-600">{t('volunteers.bronzeRange')}</p>
             </div>
             <div className="text-center">
               <div className={`w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-3xl`}>
                 ⭐
               </div>
-              <h3 className="font-bold mb-1">Серебро</h3>
-              <p className="text-sm text-gray-600">11-50 помощей</p>
+              <h3 className="font-bold mb-1">{t('volunteers.silver')}</h3>
+              <p className="text-sm text-gray-600">{t('volunteers.silverRange')}</p>
             </div>
             <div className="text-center">
               <div className={`w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center text-3xl`}>
                 👑
               </div>
-              <h3 className="font-bold mb-1">Золото</h3>
-              <p className="text-sm text-gray-600">51-100 помощей</p>
+              <h3 className="font-bold mb-1">{t('volunteers.gold')}</h3>
+              <p className="text-sm text-gray-600">{t('volunteers.goldRange')}</p>
             </div>
             <div className="text-center">
               <div className={`w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-3xl`}>
                 💎
               </div>
-              <h3 className="font-bold mb-1">Платина</h3>
-              <p className="text-sm text-gray-600">100+ помощей</p>
+              <h3 className="font-bold mb-1">{t('volunteers.platinum')}</h3>
+              <p className="text-sm text-gray-600">{t('volunteers.platinumRange')}</p>
             </div>
           </div>
         </div>
@@ -126,11 +129,11 @@ export default function VolunteersPage() {
         {isLoading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-gray-600">Загрузка...</p>
+            <p className="mt-4 text-gray-600">{t('common.loading')}</p>
           </div>
         ) : volunteers && volunteers.length > 0 ? (
           <div>
-            <h2 className="text-2xl font-bold mb-6">Лидеры месяца</h2>
+            <h2 className="text-2xl font-bold mb-6">{t('volunteers.leadersOfMonth')}</h2>
 
             {/* Top 3 Podium */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -162,7 +165,7 @@ export default function VolunteersPage() {
                       <div className="text-2xl font-bold text-primary-600">
                         {volunteer.helpCount}
                       </div>
-                      <div className="text-sm text-gray-600">помощей оказано</div>
+                      <div className="text-sm text-gray-600">{t('volunteers.helpProvided')}</div>
                     </div>
                   </div>
                 </div>
@@ -170,25 +173,25 @@ export default function VolunteersPage() {
             </div>
 
             {/* All Volunteers List */}
-            <h2 className="text-2xl font-bold mb-6 mt-12">Все волонтёры</h2>
+            <h2 className="text-2xl font-bold mb-6 mt-12">{t('volunteers.allVolunteers')}</h2>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Ранг
+                      {t('volunteers.rank')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Волонтёр
+                      {t('volunteers.volunteer')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Уровень
+                      {t('volunteers.level')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Помощь оказана
+                      {t('volunteers.helpProvided')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Рейтинг
+                      {t('volunteers.rating')}
                     </th>
                   </tr>
                 </thead>
@@ -214,7 +217,7 @@ export default function VolunteersPage() {
                                 <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
-                                Верифицирован
+                                {t('common.verified')}
                               </div>
                             )}
                           </div>
@@ -244,7 +247,7 @@ export default function VolunteersPage() {
           </div>
         ) : (
           <div className="text-center py-12 bg-white rounded-lg">
-            <p className="text-gray-600">Волонтёры не найдены</p>
+            <p className="text-gray-600">{t('volunteers.noVolunteers')}</p>
           </div>
         )}
       </div>

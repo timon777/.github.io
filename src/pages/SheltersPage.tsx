@@ -1,7 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Shelter } from '../types'
 
 export default function SheltersPage() {
+  const { t } = useTranslation()
+
   // Mock data for demonstration
   const mockShelters: Shelter[] = [
     {
@@ -73,9 +76,9 @@ export default function SheltersPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Приюты и организации</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('shelters.pageTitle')}</h1>
           <p className="text-gray-600">
-            Список верифицированных приютов и организаций, нуждающихся в помощи
+            {t('shelters.pageSubtitle')}
           </p>
         </div>
 
@@ -88,7 +91,7 @@ export default function SheltersPage() {
               </div>
               <div>
                 <div className="text-2xl font-bold text-primary-600">45</div>
-                <div className="text-sm text-gray-600">Приютов для животных</div>
+                <div className="text-sm text-gray-600">{t('shelters.animalShelters')}</div>
               </div>
             </div>
           </div>
@@ -100,7 +103,7 @@ export default function SheltersPage() {
               </div>
               <div>
                 <div className="text-2xl font-bold text-secondary-600">23</div>
-                <div className="text-sm text-gray-600">Социальных центров</div>
+                <div className="text-sm text-gray-600">{t('shelters.socialCenters')}</div>
               </div>
             </div>
           </div>
@@ -112,7 +115,7 @@ export default function SheltersPage() {
               </div>
               <div>
                 <div className="text-2xl font-bold text-green-600">68</div>
-                <div className="text-sm text-gray-600">Верифицированных</div>
+                <div className="text-sm text-gray-600">{t('shelters.verified')}</div>
               </div>
             </div>
           </div>
@@ -122,7 +125,7 @@ export default function SheltersPage() {
         {isLoading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-gray-600">Загрузка...</p>
+            <p className="mt-4 text-gray-600">{t('common.loading')}</p>
           </div>
         ) : shelters && shelters.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -144,7 +147,7 @@ export default function SheltersPage() {
                               clipRule="evenodd"
                             />
                           </svg>
-                          Верифицирован
+                          {t('common.verified')}
                         </span>
                       )}
                     </div>
@@ -184,10 +187,10 @@ export default function SheltersPage() {
 
                 <div className="flex gap-2">
                   <button className="flex-1 btn-primary">
-                    Помочь приюту
+                    {t('shelters.helpShelter')}
                   </button>
                   <button className="flex-1 btn-outline">
-                    Подробнее
+                    {t('shelters.details')}
                   </button>
                 </div>
               </div>
@@ -195,7 +198,7 @@ export default function SheltersPage() {
           </div>
         ) : (
           <div className="text-center py-12 bg-white rounded-lg">
-            <p className="text-gray-600">Приюты не найдены</p>
+            <p className="text-gray-600">{t('shelters.noShelters')}</p>
           </div>
         )}
       </div>
