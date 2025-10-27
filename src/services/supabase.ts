@@ -1,17 +1,53 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../types/database'
+import {
+  mockUsers,
+  mockHelpRequests,
+  mockShelters,
+  mockVolunteers,
+  getMockAuthUser,
+  setMockAuthUser,
+} from './mockData'
 
 // Supabase configuration
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
-// Create Supabase client
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
+// Check if Supabase is configured
+export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey)
+
+// Create Supabase client (only if configured)
+export const supabase = isSupabaseConfigured
+  ? createClient<Database>(supabaseUrl, supabaseAnonKey)
+  : null
+
+// Demo mode flag
+export const isDemoMode = !isSupabaseConfigured
+
+// Log mode
+if (isDemoMode) {
+  console.warn('🔶 DEMO MODE: Supabase не настроен. Используются mock данные.')
+  console.warn('📝 Для подключения к БД настройте .env файл (см. SUPABASE_SETUP.md)')
+}
 
 // Auth service
 export const authService = {
   async signUp(email: string, password: string, userData: any) {
-    const { data, error } = await supabase.auth.signUp({
+    if (isDemoMode) {
+      // Demo mode: create mock user
+      const mockUser = {
+        ...mockUsers[0],
+        email,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        role: userData.role,
+      }
+      setMockAuthUser(mockUser)
+      localStorage.setItem('demo_user', JSON.stringify(mockUser))
+      return { user: mockUser as any, session: { access_token: 'demo-token' } as any }
+    }
+
+    const { data, error } = await supabase!.auth.signUp({
       email,
       password,
       options: {
@@ -29,7 +65,16 @@ export const authService = {
   },
 
   async signIn(email: string, password: string) {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    if (isDemoMode) {
+      // Demo mode: return mock user
+      const mockUser = mockUsers[0]
+      setMockAuthUser(mockUser)
+      localStorage.setItem('demo_user', JSON.stringify(mockUser))
+      console.log('✅ Demo login успешен:', email)
+      return { user: mockUser as any, session: { access_token: 'demo-token' } as any }
+    }
+
+    const { data, error } = await supabase!.auth.signInWithPassword({
       email,
       password,
     })
@@ -39,31 +84,74 @@ export const authService = {
   },
 
   async signOut() {
-    const { error } = await supabase.auth.signOut()
+    if (isDemoMode) {
+      setMockAuthUser(null)
+      localStorage.removeItem('demo_user')
+      console.log('✅ Demo logout')
+      return
+    }
+
+    const { error } = await supabase!.auth.signOut()
     if (error) throw error
   },
 
   async getCurrentUser() {
-    const { data: { user }, error } = await supabase.auth.getUser()
+    if (isDemoMode) {
+      const stored = localStorage.getItem('demo_user')
+      if (stored) {
+        const user = JSON.parse(stored)
+        setMockAuthUser(user)
+        return user
+      }
+      return null
+    }
+
+    const { data: { user }, error } = await supabase!.auth.getUser()
     if (error) throw error
     return user
   },
 
   async getCurrentSession() {
-    const { data: { session }, error } = await supabase.auth.getSession()
+    if (isDemoMode) {
+      const user = getMockAuthUser()
+      return user ? { access_token: 'demo-token', user } as any : null
+    }
+
+    const { data: { session }, error } = await supabase!.auth.getSession()
     if (error) throw error
     return session
   },
 
   onAuthStateChange(callback: (event: string, session: any) => void) {
-    return supabase.auth.onAuthStateChange(callback)
+    if (isDemoMode) {
+      // Demo mode: no-op, return dummy unsubscribe
+      return { data: { subscription: { unsubscribe: () => {} } } }
+    }
+
+    return supabase!.auth.onAuthStateChange(callback)
   },
 }
 
 // Help requests service
 export const requestsService = {
   async getAll(filters?: any) {
-    let query = supabase
+    if (isDemoMode) {
+      let data = [...mockHelpRequests]
+
+      if (filters?.category) {
+        data = data.filter((r) => r.category === filters.category)
+      }
+      if (filters?.status) {
+        data = data.filter((r) => r.status === filters.status)
+      }
+      if (filters?.priority) {
+        data = data.filter((r) => r.priority === filters.priority)
+      }
+
+      return data
+    }
+
+    let query = supabase!
       .from('help_requests')
       .select(`
         *,
@@ -90,7 +178,11 @@ export const requestsService = {
   },
 
   async getById(id: string) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      return mockHelpRequests.find((r) => r.id === id) || null
+    }
+
+    const { data, error } = await supabase!
       .from('help_requests')
       .select(`
         *,
@@ -109,7 +201,12 @@ export const requestsService = {
   },
 
   async create(requestData: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: создан запрос', requestData)
+      return { id: 'demo-request-new', ...requestData, created_at: new Date().toISOString() }
+    }
+
+    const { data, error } = await supabase!
       .from('help_requests')
       .insert(requestData)
       .select()
@@ -120,7 +217,12 @@ export const requestsService = {
   },
 
   async update(id: string, updates: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: обновлен запрос', id, updates)
+      return { id, ...updates }
+    }
+
+    const { data, error } = await supabase!
       .from('help_requests')
       .update(updates)
       .eq('id', id)
@@ -132,7 +234,12 @@ export const requestsService = {
   },
 
   async delete(id: string) {
-    const { error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: удален запрос', id)
+      return
+    }
+
+    const { error } = await supabase!
       .from('help_requests')
       .delete()
       .eq('id', id)
@@ -144,7 +251,20 @@ export const requestsService = {
 // Shelters service
 export const sheltersService = {
   async getAll(filters?: any) {
-    let query = supabase
+    if (isDemoMode) {
+      let data = [...mockShelters]
+
+      if (filters?.type) {
+        data = data.filter((s) => s.type === filters.type)
+      }
+      if (filters?.verified !== undefined) {
+        data = data.filter((s) => s.verified === filters.verified)
+      }
+
+      return data
+    }
+
+    let query = supabase!
       .from('shelters')
       .select(`
         *,
@@ -167,7 +287,11 @@ export const sheltersService = {
   },
 
   async getById(id: string) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      return mockShelters.find((s) => s.id === id) || null
+    }
+
+    const { data, error } = await supabase!
       .from('shelters')
       .select(`
         *,
@@ -182,7 +306,12 @@ export const sheltersService = {
   },
 
   async create(shelterData: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: создан приют', shelterData)
+      return { id: 'demo-shelter-new', ...shelterData, created_at: new Date().toISOString() }
+    }
+
+    const { data, error } = await supabase!
       .from('shelters')
       .insert(shelterData)
       .select()
@@ -193,7 +322,12 @@ export const sheltersService = {
   },
 
   async update(id: string, updates: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: обновлен приют', id, updates)
+      return { id, ...updates }
+    }
+
+    const { data, error } = await supabase!
       .from('shelters')
       .update(updates)
       .eq('id', id)
@@ -208,7 +342,12 @@ export const sheltersService = {
 // Responses service
 export const responsesService = {
   async create(responseData: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: создан отклик', responseData)
+      return { id: 'demo-response-new', ...responseData, created_at: new Date().toISOString() }
+    }
+
+    const { data, error } = await supabase!
       .from('responses')
       .insert(responseData)
       .select()
@@ -219,7 +358,12 @@ export const responsesService = {
   },
 
   async update(id: string, updates: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: обновлен отклик', id, updates)
+      return { id, ...updates }
+    }
+
+    const { data, error } = await supabase!
       .from('responses')
       .update(updates)
       .eq('id', id)
@@ -231,7 +375,11 @@ export const responsesService = {
   },
 
   async getByRequestId(requestId: string) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      return []
+    }
+
+    const { data, error } = await supabase!
       .from('responses')
       .select(`
         *,
@@ -248,7 +396,12 @@ export const responsesService = {
 // Locations service
 export const locationsService = {
   async create(locationData: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: создана локация', locationData)
+      return { id: 'demo-location-new', ...locationData }
+    }
+
+    const { data, error } = await supabase!
       .from('locations')
       .insert(locationData)
       .select()
@@ -259,7 +412,12 @@ export const locationsService = {
   },
 
   async update(id: string, updates: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: обновлена локация', id, updates)
+      return { id, ...updates }
+    }
+
+    const { data, error } = await supabase!
       .from('locations')
       .update(updates)
       .eq('id', id)
@@ -274,7 +432,11 @@ export const locationsService = {
 // Users service (for profiles, stats, etc.)
 export const usersService = {
   async getProfile(userId: string) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      return mockUsers.find((u) => u.id === userId) || getMockAuthUser()
+    }
+
+    const { data, error } = await supabase!
       .from('users')
       .select('*')
       .eq('id', userId)
@@ -285,7 +447,15 @@ export const usersService = {
   },
 
   async updateProfile(userId: string, updates: any) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      console.log('✅ Demo: обновлен профиль', userId, updates)
+      const user = { ...getMockAuthUser(), ...updates }
+      setMockAuthUser(user as any)
+      localStorage.setItem('demo_user', JSON.stringify(user))
+      return user
+    }
+
+    const { data, error } = await supabase!
       .from('users')
       .update(updates)
       .eq('id', userId)
@@ -297,7 +467,11 @@ export const usersService = {
   },
 
   async getTopVolunteers(limit: number = 10) {
-    const { data, error } = await supabase
+    if (isDemoMode) {
+      return mockVolunteers.slice(0, limit)
+    }
+
+    const { data, error } = await supabase!
       .from('users')
       .select('*')
       .eq('role', 'volunteer')
@@ -312,7 +486,12 @@ export const usersService = {
 // Storage service for file uploads
 export const storageService = {
   async uploadFile(bucket: string, path: string, file: File) {
-    const { data, error } = await supabase.storage
+    if (isDemoMode) {
+      console.log('✅ Demo: загружен файл', bucket, path, file.name)
+      return { path: `demo/${path}` } as any
+    }
+
+    const { data, error } = await supabase!.storage
       .from(bucket)
       .upload(path, file)
 
@@ -321,7 +500,11 @@ export const storageService = {
   },
 
   async getPublicUrl(bucket: string, path: string) {
-    const { data } = supabase.storage
+    if (isDemoMode) {
+      return `https://via.placeholder.com/400x300?text=${encodeURIComponent(path)}`
+    }
+
+    const { data } = supabase!.storage
       .from(bucket)
       .getPublicUrl(path)
 
@@ -329,7 +512,12 @@ export const storageService = {
   },
 
   async deleteFile(bucket: string, path: string) {
-    const { error } = await supabase.storage
+    if (isDemoMode) {
+      console.log('✅ Demo: удален файл', bucket, path)
+      return
+    }
+
+    const { error } = await supabase!.storage
       .from(bucket)
       .remove([path])
 

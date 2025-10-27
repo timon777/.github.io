@@ -1,0 +1,171 @@
+// Mock data for demo mode (when Supabase is not configured)
+
+export const mockUsers = [
+  {
+    id: 'demo-user-1',
+    email: 'demo@umit.asia',
+    first_name: 'Демо',
+    last_name: 'Пользователь',
+    role: 'volunteer',
+    phone: '+7 777 123 4567',
+    avatar: null,
+    rating: 4.8,
+    verified: true,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'demo-user-2',
+    email: 'beneficiary@example.com',
+    first_name: 'Нуржан',
+    last_name: 'Алматов',
+    role: 'beneficiary',
+    verified: true,
+    created_at: '2024-01-15T00:00:00Z',
+  },
+]
+
+export const mockLocations = [
+  {
+    id: 'location-1',
+    address: 'ул. Абая 150',
+    city: 'Алматы',
+    region: 'Алматинская область',
+    country: 'Казахстан',
+    latitude: 43.238293,
+    longitude: 76.889709,
+  },
+  {
+    id: 'location-2',
+    address: 'пр. Республики 15',
+    city: 'Астана',
+    region: 'Акмолинская область',
+    country: 'Казахстан',
+    latitude: 51.169392,
+    longitude: 71.449074,
+  },
+]
+
+export const mockHelpRequests = [
+  {
+    id: 'request-1',
+    title: 'Нужна помощь с продуктами',
+    description: 'Семья из 4 человек, требуется помощь с продуктами питания на месяц',
+    category: 'food',
+    status: 'pending',
+    priority: 'high',
+    beneficiary_id: 'demo-user-2',
+    beneficiary: mockUsers[1],
+    location_id: 'location-1',
+    location: mockLocations[0],
+    images: [],
+    created_at: '2024-10-20T10:00:00Z',
+    updated_at: '2024-10-20T10:00:00Z',
+  },
+  {
+    id: 'request-2',
+    title: 'Требуется зимняя одежда',
+    description: 'Нужна теплая одежда для детей 5 и 8 лет',
+    category: 'clothing',
+    status: 'approved',
+    priority: 'medium',
+    beneficiary_id: 'demo-user-2',
+    beneficiary: mockUsers[1],
+    location_id: 'location-2',
+    location: mockLocations[1],
+    images: [],
+    created_at: '2024-10-18T14:30:00Z',
+    updated_at: '2024-10-19T09:00:00Z',
+  },
+]
+
+export const mockShelters = [
+  {
+    id: 'shelter-1',
+    name: 'Приют "Надежда"',
+    description: 'Приют для животных. Принимаем корм, медикаменты, игрушки.',
+    type: 'animal',
+    location_id: 'location-1',
+    location: mockLocations[0],
+    contact_email: 'hope@shelter.kz',
+    contact_phone: '+7 777 111 2233',
+    images: [],
+    verified: true,
+    rating: 4.9,
+    manager_id: 'demo-user-1',
+    manager: mockUsers[0],
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'shelter-2',
+    name: 'Социальный приют "Забота"',
+    description: 'Социальный приют для людей в трудной жизненной ситуации',
+    type: 'human',
+    location_id: 'location-2',
+    location: mockLocations[1],
+    contact_email: 'care@shelter.kz',
+    contact_phone: '+7 777 222 3344',
+    images: [],
+    verified: true,
+    rating: 4.7,
+    manager_id: 'demo-user-1',
+    manager: mockUsers[0],
+    created_at: '2024-02-01T00:00:00Z',
+  },
+]
+
+export const mockVolunteers = [
+  {
+    id: 'volunteer-1',
+    email: 'volunteer1@example.com',
+    first_name: 'Айгуль',
+    last_name: 'Сериковна',
+    role: 'volunteer',
+    rating: 4.9,
+    verified: true,
+    stats: {
+      requests_completed: 45,
+      volunteer_hours: 120,
+      donations_made: 30,
+    },
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'volunteer-2',
+    email: 'volunteer2@example.com',
+    first_name: 'Данияр',
+    last_name: 'Бекович',
+    role: 'volunteer',
+    rating: 4.7,
+    verified: true,
+    stats: {
+      requests_completed: 32,
+      volunteer_hours: 85,
+      donations_made: 25,
+    },
+    created_at: '2024-02-01T00:00:00Z',
+  },
+  {
+    id: 'volunteer-3',
+    email: 'volunteer3@example.com',
+    first_name: 'Мадина',
+    last_name: 'Токаева',
+    role: 'volunteer',
+    rating: 4.6,
+    verified: true,
+    stats: {
+      requests_completed: 28,
+      volunteer_hours: 70,
+      donations_made: 20,
+    },
+    created_at: '2024-03-01T00:00:00Z',
+  },
+]
+
+// Mock auth state
+let mockAuthUser: typeof mockUsers[0] | null = null
+
+export const getMockAuthUser = () => mockAuthUser
+
+export const setMockAuthUser = (user: typeof mockUsers[0] | null) => {
+  mockAuthUser = user
+}
