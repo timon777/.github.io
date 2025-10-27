@@ -1,3 +1,6 @@
+/* Leaflet map styles - must be first before Tailwind directives */
+@import 'leaflet/dist/leaflet.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,6 +32,3 @@
     @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200;
   }
 }
-
-/* Leaflet map styles */
-@import 'leaflet/dist/leaflet.css';
