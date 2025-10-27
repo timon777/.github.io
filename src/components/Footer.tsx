@@ -58,7 +58,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-bold mb-4">Контакты</h3>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li>Email: info@umit.asia</li>
+              <li>Email: umit@maxico.kz</li>
               <li>Telegram: @marchenkokz</li>
               <li>Горячая линия: 8-800-XXX-XX-XX</li>
             </ul>
