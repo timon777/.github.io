@@ -31,7 +31,43 @@
     "title": "Social Registry of Targeted Assistance",
     "subtitle": "Real help to real people with full transparency",
     "features": "Features",
-    "howItWorks": "How It Works"
+    "howItWorks": "How It Works",
+    "hero": {
+      "title": "Social Registry of Targeted Assistance «Úmit»",
+      "subtitle": "Real help to real people with full transparency — no money, only kindness.",
+      "viewRequests": "View Requests",
+      "askHelp": "Ask for Help"
+    },
+    "features": {
+      "title": "Platform Features",
+      "transparency": {
+        "title": "Full Transparency",
+        "description": "History of every aid transfer with photo and video reports"
+      },
+      "ecosystem": {
+        "title": "Unified Ecosystem",
+        "description": "Uniting donors, NGOs, government, and business"
+      },
+      "noMoney": {
+        "title": "No Money",
+        "description": "Only in-kind assistance: food, items, services"
+      }
+    },
+    "helpCategories": {
+      "title": "Help Categories",
+      "services": "Services"
+    },
+    "stats": {
+      "helpRequests": "Help Requests",
+      "activeVolunteers": "Active Volunteers",
+      "shelters": "Shelters",
+      "helpProvided": "Help Provided"
+    },
+    "cta": {
+      "title": "Join Us",
+      "subtitle": "Become part of the ecosystem of kindness and transparency",
+      "register": "Register"
+    }
   },
   "auth": {
     "email": "Email",
