@@ -237,7 +237,7 @@ MIT License - см. файл LICENSE для деталей
 ## 📞 Контакты
 
 - Email: info@umit.asia
-- Telegram: @umit_help
+- Telegram: @marchenkokz
 - Сайт: [umit.asia](https://umit.asia)
 
 ---
