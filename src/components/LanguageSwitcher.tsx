@@ -13,17 +13,16 @@ export default function LanguageSwitcher() {
     i18n.changeLanguage(lng)
   }
 
+  // Показываем только неактивные языки
+  const availableLanguages = languages.filter(lang => lang.code !== i18n.language)
+
   return (
     <div className="flex items-center space-x-2">
-      {languages.map((lang) => (
+      {availableLanguages.map((lang) => (
         <button
           key={lang.code}
           onClick={() => changeLanguage(lang.code)}
-          className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-            i18n.language === lang.code
-              ? 'bg-sky-500 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
+          className="px-3 py-1 rounded text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
           title={lang.name}
         >
           {lang.name}
