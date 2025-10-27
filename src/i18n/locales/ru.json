@@ -22,6 +22,7 @@
   "nav": {
     "home": "Главная",
     "requests": "Запросы",
+    "registry": "Реестр",
     "shelters": "Приюты",
     "volunteers": "Волонтёры",
     "map": "Карта"
@@ -100,6 +101,26 @@
     "completed": "Завершено",
     "hours": "Часов",
     "noVolunteers": "Нет волонтёров"
+  },
+  "registry": {
+    "title": "Реестр предложений",
+    "subtitle": "Товары и услуги от доноров",
+    "createNew": "Создать объявление",
+    "type": "Тип",
+    "goods": "Товар",
+    "service": "Услуга",
+    "quantity": "Количество",
+    "unit": "Единица",
+    "expires": "Актуально до",
+    "contactDonor": "Связаться с донором",
+    "noOffers": "Нет объявлений",
+    "filterByType": "Фильтр по типу",
+    "filterByCategory": "Фильтр по категории",
+    "allTypes": "Все типы",
+    "allCategories": "Все категории",
+    "statusActive": "Активно",
+    "statusReserved": "Зарезервировано",
+    "statusCompleted": "Завершено"
   },
   "demo": {
     "banner": "DEMO РЕЖИМ: Используются тестовые данные. База данных не подключена.",

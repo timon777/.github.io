@@ -140,3 +140,27 @@ export interface Emergency {
   created_at: string
   resolved_at?: string
 }
+
+// Donor offer types
+export type OfferType = 'goods' | 'service'
+export type OfferStatus = 'active' | 'reserved' | 'completed'
+
+// Donor offer (объявление в реестре)
+export interface DonorOffer {
+  id: string
+  title: string
+  description: string
+  category: HelpCategory
+  type: OfferType // товар или услуга
+  status: OfferStatus
+  donor: User
+  location: Location
+  images?: string[]
+  quantity?: number // для товаров
+  unit?: string // единица измерения
+  contact_phone?: string
+  contact_email?: string
+  created_at: string
+  updated_at: string
+  expires_at?: string // срок действия объявления
+}

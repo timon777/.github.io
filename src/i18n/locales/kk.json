@@ -22,6 +22,7 @@
   "nav": {
     "home": "Басты бет",
     "requests": "Өтініштер",
+    "registry": "Тізілім",
     "shelters": "Баспаналар",
     "volunteers": "Волонтерлер",
     "map": "Карта"
@@ -100,6 +101,26 @@
     "completed": "Аяқталды",
     "hours": "Сағат",
     "noVolunteers": "Волонтерлер жоқ"
+  },
+  "registry": {
+    "title": "Ұсыныстар тізілімі",
+    "subtitle": "Донорлардан тауарлар мен қызметтер",
+    "createNew": "Хабарландыру жасау",
+    "type": "Түрі",
+    "goods": "Тауар",
+    "service": "Қызмет",
+    "quantity": "Саны",
+    "unit": "Өлшем бірлігі",
+    "expires": "Өзекті мерзімі",
+    "contactDonor": "Донормен байланысу",
+    "noOffers": "Хабарландырулар жоқ",
+    "filterByType": "Түрі бойынша сүзгі",
+    "filterByCategory": "Санат бойынша сүзгі",
+    "allTypes": "Барлық түрлері",
+    "allCategories": "Барлық санаттар",
+    "statusActive": "Белсенді",
+    "statusReserved": "Резервтелген",
+    "statusCompleted": "Аяқталды"
   },
   "demo": {
     "banner": "DEMO РЕЖИМІ: Сынақ деректер қолданылады. Дерекқор қосылмаған.",

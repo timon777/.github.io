@@ -22,6 +22,7 @@
   "nav": {
     "home": "Home",
     "requests": "Requests",
+    "registry": "Registry",
     "shelters": "Shelters",
     "volunteers": "Volunteers",
     "map": "Map"
@@ -100,6 +101,26 @@
     "completed": "Completed",
     "hours": "Hours",
     "noVolunteers": "No volunteers"
+  },
+  "registry": {
+    "title": "Offers Registry",
+    "subtitle": "Goods and services from donors",
+    "createNew": "Create Offer",
+    "type": "Type",
+    "goods": "Goods",
+    "service": "Service",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "expires": "Valid until",
+    "contactDonor": "Contact Donor",
+    "noOffers": "No offers",
+    "filterByType": "Filter by type",
+    "filterByCategory": "Filter by category",
+    "allTypes": "All types",
+    "allCategories": "All categories",
+    "statusActive": "Active",
+    "statusReserved": "Reserved",
+    "statusCompleted": "Completed"
   },
   "demo": {
     "banner": "DEMO MODE: Using test data. Database is not connected.",
