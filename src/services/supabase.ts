@@ -13,6 +13,13 @@ import {
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
+// Debug: log environment variables (only in development)
+console.log('🔍 Supabase Config:', {
+  url: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'NOT SET',
+  keyLength: supabaseAnonKey ? supabaseAnonKey.length : 0,
+  keyPreview: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'NOT SET'
+})
+
 // Check if Supabase is configured
 export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey)
 
@@ -28,6 +35,8 @@ export const isDemoMode = !isSupabaseConfigured
 if (isDemoMode) {
   console.warn('🔶 DEMO MODE: Supabase не настроен. Используются mock данные.')
   console.warn('📝 Для подключения к БД настройте .env файл (см. SUPABASE_SETUP.md)')
+} else {
+  console.log('✅ Supabase configured - using real database')
 }
 
 // Auth service
