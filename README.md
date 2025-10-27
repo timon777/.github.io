@@ -54,7 +54,7 @@ cp .env.example .env
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key-here
 VITE_APP_NAME=Úmit
-VITE_APP_URL=http://localhost:3000
+VITE_APP_URL=https://umit.asia
 ```
 
 > См. [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) для подробной настройки бэкенда
@@ -236,9 +236,9 @@ MIT License - см. файл LICENSE для деталей
 
 ## 📞 Контакты
 
-- Email: info@umit.kz
+- Email: info@umit.asia
 - Telegram: @umit_help
-- Сайт: [umit.kz](https://umit.kz)
+- Сайт: [umit.asia](https://umit.asia)
 
 ---
 

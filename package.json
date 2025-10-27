@@ -2,6 +2,7 @@
   "name": "umit-platform",
   "version": "1.0.0",
   "description": "Социальный реестр адресной помощи «Úmit»",
+  "homepage": "https://umit.asia",
   "type": "module",
   "scripts": {
     "dev": "vite",
