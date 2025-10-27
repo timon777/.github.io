@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { donorOffersService } from '../services/supabase'
+import { mockDonorOffers } from '../services/mockData'
 import { DonorOffer, OfferType, OfferStatus, HelpCategory } from '../types'
 import VerifiedBadge from '../components/VerifiedBadge'
 
@@ -13,11 +14,25 @@ export default function RegistryPage() {
 
   const { data: offers, isLoading } = useQuery({
     queryKey: ['donorOffers', selectedType, selectedCategory, selectedStatus],
-    queryFn: () => donorOffersService.getAll({
-      type: selectedType !== 'all' ? selectedType : undefined,
-      category: selectedCategory !== 'all' ? selectedCategory : undefined,
-      status: selectedStatus !== 'all' ? selectedStatus : undefined,
-    }),
+    queryFn: async () => {
+      try {
+        const data = await donorOffersService.getAll({
+          type: selectedType !== 'all' ? selectedType : undefined,
+          category: selectedCategory !== 'all' ? selectedCategory : undefined,
+          status: selectedStatus !== 'all' ? selectedStatus : undefined,
+        })
+        // Если данные есть, возвращаем их
+        if (data && data.length > 0) {
+          return data
+        }
+        // Если данных нет, возвращаем mock данные
+        return mockDonorOffers
+      } catch (error) {
+        // При ошибке возвращаем mock данные
+        console.warn('Failed to load offers from database, using mock data:', error)
+        return mockDonorOffers
+      }
+    },
   })
 
   const getStatusColor = (status: OfferStatus) => {
