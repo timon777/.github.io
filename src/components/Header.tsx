@@ -31,6 +31,9 @@ export default function Header() {
             <Link to="/requests" className="text-gray-700 hover:text-primary-600 transition-colors">
               {t('nav.requests')}
             </Link>
+            <Link to="/registry" className="text-gray-700 hover:text-primary-600 transition-colors">
+              {t('nav.registry')}
+            </Link>
             <Link to="/shelters" className="text-gray-700 hover:text-primary-600 transition-colors">
               {t('nav.shelters')}
             </Link>

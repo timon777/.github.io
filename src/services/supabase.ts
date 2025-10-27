@@ -5,6 +5,7 @@ import {
   mockHelpRequests,
   mockShelters,
   mockVolunteers,
+  mockDonorOffers,
   getMockAuthUser,
   setMockAuthUser,
 } from './mockData'
@@ -489,6 +490,118 @@ export const usersService = {
 
     if (error) throw error
     return data
+  },
+}
+
+// Donor offers service
+export const donorOffersService = {
+  async getAll(filters?: any) {
+    if (isDemoMode) {
+      let data = [...mockDonorOffers]
+
+      if (filters?.type) {
+        data = data.filter((o) => o.type === filters.type)
+      }
+      if (filters?.category) {
+        data = data.filter((o) => o.category === filters.category)
+      }
+      if (filters?.status) {
+        data = data.filter((o) => o.status === filters.status)
+      }
+
+      return data
+    }
+
+    let query = supabase!
+      .from('donor_offers')
+      .select(`
+        *,
+        donor:users!donor_offers_donor_id_fkey(*),
+        location:locations(*)
+      `)
+      .order('created_at', { ascending: false })
+
+    if (filters?.type) {
+      query = query.eq('type', filters.type)
+    }
+
+    if (filters?.category) {
+      query = query.eq('category', filters.category)
+    }
+
+    if (filters?.status) {
+      query = query.eq('status', filters.status)
+    }
+
+    const { data, error } = await query
+    if (error) throw error
+    return data
+  },
+
+  async getById(id: string) {
+    if (isDemoMode) {
+      return mockDonorOffers.find((o) => o.id === id) || null
+    }
+
+    const { data, error } = await supabase!
+      .from('donor_offers')
+      .select(`
+        *,
+        donor:users!donor_offers_donor_id_fkey(*),
+        location:locations(*)
+      `)
+      .eq('id', id)
+      .single()
+
+    if (error) throw error
+    return data
+  },
+
+  async create(offerData: any) {
+    if (isDemoMode) {
+      console.log('✅ Demo: создано объявление', offerData)
+      return { id: 'demo-offer-new', ...offerData, created_at: new Date().toISOString() }
+    }
+
+    const { data, error } = await supabase!
+      .from('donor_offers')
+      .insert(offerData)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  },
+
+  async update(id: string, updates: any) {
+    if (isDemoMode) {
+      console.log('✅ Demo: обновлено объявление', id, updates)
+      return { id, ...updates }
+    }
+
+    const { data, error } = await supabase!
+      .from('donor_offers')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  },
+
+  async delete(id: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: удалено объявление', id)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('donor_offers')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
   },
 }
 

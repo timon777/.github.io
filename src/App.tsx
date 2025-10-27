@@ -9,6 +9,7 @@ import ProfilePage from './pages/ProfilePage'
 import SheltersPage from './pages/SheltersPage'
 import VolunteersPage from './pages/VolunteersPage'
 import MapPage from './pages/MapPage'
+import RegistryPage from './pages/RegistryPage'
 import { useAuthStore } from './stores/authStore'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="requests" element={<RequestsPage />} />
+        <Route path="registry" element={<RegistryPage />} />
         <Route path="shelters" element={<SheltersPage />} />
         <Route path="volunteers" element={<VolunteersPage />} />
         <Route path="map" element={<MapPage />} />
