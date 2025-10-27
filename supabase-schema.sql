@@ -86,12 +86,12 @@ CREATE INDEX IF NOT EXISTS idx_locations_geom ON public.locations USING GIST(geo
 
 -- Триггер для автообновления geom при изменении координат
 CREATE OR REPLACE FUNCTION update_location_geom()
-RETURNS TRIGGER AS \$\$
+RETURNS TRIGGER AS $$
 BEGIN
   NEW.geom = ST_SetSRID(ST_MakePoint(NEW.longitude, NEW.latitude), 4326);
   RETURN NEW;
 END;
-\$\$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_update_location_geom
   BEFORE INSERT OR UPDATE ON public.locations
@@ -276,12 +276,12 @@ CREATE INDEX IF NOT EXISTS idx_request_volunteers_volunteer ON public.request_vo
 
 -- Функция обновления updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS \$\$
+RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-\$\$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 -- Триггеры для автообновления updated_at
 CREATE TRIGGER trigger_users_updated_at
@@ -306,7 +306,7 @@ CREATE TRIGGER trigger_shelters_updated_at
 
 -- Функция создания профиля пользователя при регистрации
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS \$\$
+RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.users (id, email, first_name, last_name)
   VALUES (
@@ -322,7 +322,7 @@ BEGIN
 
   RETURN NEW;
 END;
-\$\$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Триггер для автосоздания профиля при регистрации
 CREATE TRIGGER on_auth_user_created
