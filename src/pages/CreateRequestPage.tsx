@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { HelpCategory, Priority } from '../types'
+import { useLocationStore, CITIES } from '../stores/locationStore'
+import { useAuthStore } from '../stores/authStore'
 
 interface RequestForm {
   title: string
@@ -10,11 +13,15 @@ interface RequestForm {
   priority: Priority
   address: string
   city: string
-  region: string
+  contact_phone?: string
+  contact_email?: string
 }
 
 export default function CreateRequestPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
+  const { selectedCity } = useLocationStore()
+  const { user } = useAuthStore()
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -22,20 +29,34 @@ export default function CreateRequestPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RequestForm>()
+  } = useForm<RequestForm>({
+    defaultValues: {
+      city: selectedCity?.name || 'Астана',
+      contact_phone: user?.phone || '',
+      contact_email: user?.email || '',
+    }
+  })
 
   const onSubmit = async (data: RequestForm) => {
     setIsLoading(true)
     try {
-      // TODO: Submit to Directus
+      // TODO: Интеграция с Supabase
       console.log('Creating request:', data)
-      // await requestsService.create(data)
+
+      // await helpRequestsService.create({
+      //   ...data,
+      //   beneficiary_id: user.id,
+      //   location: { city: data.city, address: data.address },
+      //   status: 'open'
+      // })
+
       setSuccess(true)
       setTimeout(() => {
         navigate('/requests')
       }, 2000)
     } catch (error) {
       console.error('Error creating request:', error)
+      alert(t('common.error'))
     } finally {
       setIsLoading(false)
     }
@@ -44,11 +65,14 @@ export default function CreateRequestPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-3xl">
-        <h1 className="text-3xl font-bold mb-8">Создать запрос на помощь</h1>
+        <h1 className="text-3xl font-bold mb-2">{t('requests.createNew')}</h1>
+        <p className="text-gray-600 mb-8">
+          Создайте запрос на помощь и получите поддержку от сообщества
+        </p>
 
         {success && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">
-            Запрос успешно создан! Перенаправление...
+            ✓ Запрос успешно создан! Перенаправляем в список запросов...
           </div>
         )}
 
@@ -87,26 +111,25 @@ export default function CreateRequestPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Категория *
+                  {t('registry.category')} *
                 </label>
                 <select
-                  {...register('category', { required: 'Выберите категорию' })}
+                  {...register('category', { required: true })}
                   className="input-field"
                 >
-                  <option value="">Выберите категорию</option>
-                  <option value="food">Продукты питания</option>
-                  <option value="clothing">Одежда и обувь</option>
-                  <option value="medicine">Медикаменты</option>
-                  <option value="household">Бытовая техника</option>
-                  <option value="construction">Стройматериалы</option>
-                  <option value="transport">Транспорт</option>
-                  <option value="medical_service">Медицинская помощь</option>
-                  <option value="legal_service">Юридическая помощь</option>
-                  <option value="psychological_service">Психологическая помощь</option>
-                  <option value="animal_care">Помощь животным</option>
+                  <option value="">{t('categories.all')}</option>
+                  <option value="food">{t('categories.food')}</option>
+                  <option value="clothing">{t('categories.clothing')}</option>
+                  <option value="medicine">{t('categories.medicine')}</option>
+                  <option value="household">{t('categories.household')}</option>
+                  <option value="transport">{t('categories.transport')}</option>
+                  <option value="animal_care">{t('categories.animal_care')}</option>
+                  <option value="medical_service">{t('categories.medical_service')}</option>
+                  <option value="legal_service">{t('categories.legal_service')}</option>
+                  <option value="psychological_service">{t('categories.psychological_service')}</option>
                 </select>
                 {errors.category && (
-                  <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
+                  <p className="mt-1 text-sm text-red-600">Обязательное поле</p>
                 )}
               </div>
 
@@ -133,52 +156,60 @@ export default function CreateRequestPage() {
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold mb-4">Местоположение</h3>
 
-              <div className="space-y-4">
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Город *
+                </label>
+                <select
+                  {...register('city', { required: true })}
+                  className="input-field"
+                >
+                  {CITIES.map((city) => (
+                    <option key={city.id} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Адрес
+                </label>
+                <input
+                  type="text"
+                  {...register('address')}
+                  className="input-field"
+                  placeholder="Улица, дом, квартира..."
+                />
+              </div>
+            </div>
+
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold mb-4">Контактная информация</h3>
+
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Адрес *
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Телефон
                   </label>
                   <input
-                    {...register('address', { required: 'Адрес обязателен' })}
-                    type="text"
+                    type="tel"
+                    {...register('contact_phone')}
                     className="input-field"
-                    placeholder="Улица, дом, квартира"
+                    placeholder="+7 777 123 4567"
                   />
-                  {errors.address && (
-                    <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
-                  )}
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Город *
-                    </label>
-                    <input
-                      {...register('city', { required: 'Город обязателен' })}
-                      type="text"
-                      className="input-field"
-                      placeholder="Алматы"
-                    />
-                    {errors.city && (
-                      <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Регион *
-                    </label>
-                    <input
-                      {...register('region', { required: 'Регион обязателен' })}
-                      type="text"
-                      className="input-field"
-                      placeholder="Алматы"
-                    />
-                    {errors.region && (
-                      <p className="mt-1 text-sm text-red-600">{errors.region.message}</p>
-                    )}
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    {...register('contact_email')}
+                    className="input-field"
+                    placeholder="email@example.com"
+                  />
                 </div>
               </div>
             </div>
