@@ -61,6 +61,7 @@ export interface HelpRequest {
   completed_at?: string
   volunteers?: User[]
   responses?: Response[]
+  computed_priority?: number
 }
 
 // Needed items

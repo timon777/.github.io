@@ -6,6 +6,7 @@ import { useRoleAccess } from '../hooks/useRoleAccess'
 import LanguageSwitcher from './LanguageSwitcher'
 import CitySelector from './CitySelector'
 import VerifiedBadge from './VerifiedBadge'
+import { useEmergencyStore } from '../stores/emergencyStore'
 
 export default function Header() {
   const { t } = useTranslation()
@@ -13,6 +14,16 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuthStore()
   const { canCreateRequests, canCreateOffers } = useRoleAccess()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { isEmergency, activate, deactivate } = useEmergencyStore()
+  const canManageEmergency = user?.role === 'admin' || user?.role === 'ngo'
+
+  const handleEmergencyToggle = () => {
+    if (isEmergency) {
+      deactivate()
+    } else {
+      activate()
+    }
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -59,6 +70,22 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-2">
             <CitySelector />
             <LanguageSwitcher />
+
+            {canManageEmergency && (
+              <button
+                onClick={handleEmergencyToggle}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                  isEmergency
+                    ? 'border-red-200 bg-red-100 text-red-700 hover:bg-red-200'
+                    : 'border-gray-200 text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v4m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.66 1.73-3L13.73 4c-.77-1.34-2.69-1.34-3.46 0L3.34 16c-.77 1.34.19 3 1.73 3z" />
+                </svg>
+                <span>{isEmergency ? t('emergency.deactivate') : t('emergency.activate')}</span>
+              </button>
+            )}
 
             {isAuthenticated && user ? (
               <>
@@ -168,6 +195,24 @@ export default function Header() {
               <div className="border-t border-gray-200 pt-4 space-y-3">
                 {isAuthenticated && user ? (
                   <>
+                    {canManageEmergency && (
+                      <button
+                        onClick={() => {
+                          handleEmergencyToggle()
+                          closeMobileMenu()
+                        }}
+                        className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors w-full ${
+                          isEmergency
+                            ? 'border-red-200 bg-red-100 text-red-700 hover:bg-red-200'
+                            : 'border-gray-200 text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v4m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.66 1.73-3L13.73 4c-.77-1.34-2.69-1.34-3.46 0L3.34 16c-.77 1.34.19 3 1.73 3z" />
+                        </svg>
+                        <span>{isEmergency ? t('emergency.deactivate') : t('emergency.activate')}</span>
+                      </button>
+                    )}
                     <Link
                       to="/profile"
                       className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors px-2 py-1"
