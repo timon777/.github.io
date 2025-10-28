@@ -6,6 +6,7 @@ import RegisterPage from './pages/RegisterPage'
 import RequestsPage from './pages/RequestsPage'
 import CreateRequestPage from './pages/CreateRequestPage'
 import CreateOfferPage from './pages/CreateOfferPage'
+import OfferDetailPage from './pages/OfferDetailPage'
 import ProfilePage from './pages/ProfilePage'
 import SheltersPage from './pages/SheltersPage'
 import VolunteersPage from './pages/VolunteersPage'
@@ -22,6 +23,7 @@ function App() {
         <Route path="register" element={<RegisterPage />} />
         <Route path="requests" element={<RequestsPage />} />
         <Route path="registry" element={<RegistryPage />} />
+        <Route path="offers/:id" element={<OfferDetailPage />} />
         <Route path="shelters" element={<SheltersPage />} />
         <Route path="volunteers" element={<VolunteersPage />} />
         <Route path="map" element={<MapPage />} />

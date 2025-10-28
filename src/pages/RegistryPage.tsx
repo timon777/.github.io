@@ -267,9 +267,12 @@ export default function RegistryPage() {
                   </div>
                 )}
 
-                <button className="w-full btn-primary" disabled={offer.status !== 'active'}>
-                  {offer.status === 'active' ? t('registry.contact') : t('registry.notAvailable')}
-                </button>
+                <Link
+                  to={`/offers/${offer.id}`}
+                  className="w-full btn-primary block text-center"
+                >
+                  {t('registry.viewDetails')}
+                </Link>
               </div>
             ))}
           </div>
@@ -346,12 +349,12 @@ export default function RegistryPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <button
-                          className="btn-primary text-xs py-1 px-3"
-                          disabled={offer.status !== 'active'}
+                        <Link
+                          to={`/offers/${offer.id}`}
+                          className="text-primary-600 hover:text-primary-900 font-medium"
                         >
-                          {offer.status === 'active' ? t('registry.contact') : t('registry.notAvailable')}
-                        </button>
+                          {t('registry.viewDetails')}
+                        </Link>
                       </td>
                     </tr>
                   ))}

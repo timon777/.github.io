@@ -215,7 +215,18 @@
     "offers": "offers",
     "city": "City",
     "donor": "Donor",
-    "actions": "Actions"
+    "actions": "Actions",
+    "viewDetails": "View Details",
+    "backToRegistry": "Back to Registry",
+    "notFound": "Offer not found",
+    "description": "Description",
+    "address": "Address",
+    "active": "Active",
+    "reserved": "Reserved",
+    "completed": "Completed",
+    "confirmDelete": "Are you sure you want to delete this offer?",
+    "pcs": "pcs",
+    "loginToContact": "Login to contact donor"
   },
   "demo": {
     "banner": "DEMO MODE: Using test data. Database is not connected.",
