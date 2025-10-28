@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
+import { useRoleAccess } from '../hooks/useRoleAccess'
 import LanguageSwitcher from './LanguageSwitcher'
 import CitySelector from './CitySelector'
 import VerifiedBadge from './VerifiedBadge'
@@ -10,6 +11,7 @@ export default function Header() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, isAuthenticated, logout } = useAuthStore()
+  const { canCreateRequests, canCreateOffers } = useRoleAccess()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const handleLogout = async () => {
@@ -60,9 +62,16 @@ export default function Header() {
 
             {isAuthenticated && user ? (
               <>
-                <Link to="/create-request" className="btn-primary text-sm">
-                  {t('requests.createNew')}
-                </Link>
+                {canCreateRequests() && (
+                  <Link to="/create-request" className="btn-primary text-sm">
+                    {t('requests.createNew')}
+                  </Link>
+                )}
+                {canCreateOffers() && (
+                  <Link to="/create-offer" className="btn-primary text-sm">
+                    {t('registry.createNew')}
+                  </Link>
+                )}
                 <Link
                   to="/profile"
                   className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors"
@@ -174,13 +183,24 @@ export default function Header() {
                         <VerifiedBadge verified={user.verified || false} size="sm" />
                       </span>
                     </Link>
-                    <Link
-                      to="/create-request"
-                      className="block btn-primary text-center"
-                      onClick={closeMobileMenu}
-                    >
-                      {t('requests.createNew')}
-                    </Link>
+                    {canCreateRequests() && (
+                      <Link
+                        to="/create-request"
+                        className="block btn-primary text-center"
+                        onClick={closeMobileMenu}
+                      >
+                        {t('requests.createNew')}
+                      </Link>
+                    )}
+                    {canCreateOffers() && (
+                      <Link
+                        to="/create-offer"
+                        className="block btn-primary text-center"
+                        onClick={closeMobileMenu}
+                      >
+                        {t('registry.createNew')}
+                      </Link>
+                    )}
                     <button onClick={handleLogout} className="w-full btn-secondary">
                       {t('common.logout')}
                     </button>

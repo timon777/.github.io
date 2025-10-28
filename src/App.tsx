@@ -1,20 +1,19 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import RequestsPage from './pages/RequestsPage'
 import CreateRequestPage from './pages/CreateRequestPage'
+import CreateOfferPage from './pages/CreateOfferPage'
 import ProfilePage from './pages/ProfilePage'
 import SheltersPage from './pages/SheltersPage'
 import VolunteersPage from './pages/VolunteersPage'
 import MapPage from './pages/MapPage'
 import RegistryPage from './pages/RegistryPage'
-import { useAuthStore } from './stores/authStore'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
-
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -27,14 +26,30 @@ function App() {
         <Route path="volunteers" element={<VolunteersPage />} />
         <Route path="map" element={<MapPage />} />
 
-        {/* Protected routes */}
+        {/* Role-based protected routes */}
         <Route
           path="create-request"
-          element={isAuthenticated ? <CreateRequestPage /> : <Navigate to="/login" />}
+          element={
+            <ProtectedRoute requireRoles={['beneficiary', 'shelter', 'ngo', 'admin']}>
+              <CreateRequestPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="create-offer"
+          element={
+            <ProtectedRoute requireRoles={['donor', 'shelter', 'ngo', 'admin']}>
+              <CreateOfferPage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="profile"
-          element={isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />}
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
         />
       </Route>
     </Routes>
