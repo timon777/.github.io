@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { HelpCategory, OfferType } from '../types'
 import { useLocationStore, CITIES } from '../stores/locationStore'
 import { useAuthStore } from '../stores/authStore'
+import { donorOffersService, locationsService } from '../services/supabase'
 
 interface OfferForm {
   title: string
@@ -46,30 +47,53 @@ export default function CreateOfferPage() {
   const offerType = watch('type')
 
   const onSubmit = async (data: OfferForm) => {
+    if (!user) {
+      alert('Необходимо войти в систему')
+      navigate('/login')
+      return
+    }
+
     setIsLoading(true)
     try {
-      // TODO: Интеграция с Supabase
-      console.log('Creating offer:', data)
-
-      // Расчет даты истечения
+      // Расчёт даты истечения
       const expiresAt = new Date()
       expiresAt.setDate(expiresAt.getDate() + data.expires_days)
 
-      // await donorOffersService.create({
-      //   ...data,
-      //   donor_id: user.id,
-      //   location: { city: data.city, address: data.address },
-      //   status: 'active',
-      //   expires_at: expiresAt.toISOString()
-      // })
+      // Найти город из CITIES для получения координат
+      const selectedCityData = CITIES.find(c => c.name === data.city)
+
+      // Создаём локацию
+      const location = await locationsService.create({
+        city: data.city,
+        address: data.address || '',
+        latitude: selectedCityData?.latitude || 0,
+        longitude: selectedCityData?.longitude || 0,
+        region: selectedCityData?.region || data.city
+      })
+
+      // Создаём предложение
+      await donorOffersService.create({
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        type: data.type,
+        quantity: data.type === 'goods' ? data.quantity : null,
+        unit: data.type === 'goods' ? data.unit : null,
+        contact_phone: data.contact_phone || user.phone || null,
+        contact_email: data.contact_email || user.email || null,
+        donor_id: user.id,
+        location_id: location.id,
+        status: 'active',
+        expires_at: expiresAt.toISOString()
+      })
 
       setSuccess(true)
       setTimeout(() => {
         navigate('/registry')
       }, 2000)
     } catch (error) {
-      console.error('Error creating offer:', error)
-      alert(t('common.error'))
+      console.error('Ошибка при создании предложения:', error)
+      alert(t('common.error') || 'Произошла ошибка при создании объявления')
     } finally {
       setIsLoading(false)
     }

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { HelpCategory, Priority } from '../types'
 import { useLocationStore, CITIES } from '../stores/locationStore'
 import { useAuthStore } from '../stores/authStore'
+import { requestsService, locationsService } from '../services/supabase'
 
 interface RequestForm {
   title: string
@@ -38,25 +39,46 @@ export default function CreateRequestPage() {
   })
 
   const onSubmit = async (data: RequestForm) => {
+    if (!user) {
+      alert('Необходимо войти в систему')
+      navigate('/login')
+      return
+    }
+
     setIsLoading(true)
     try {
-      // TODO: Интеграция с Supabase
-      console.log('Creating request:', data)
+      // Найти город из CITIES для получения координат
+      const selectedCityData = CITIES.find(c => c.name === data.city)
 
-      // await helpRequestsService.create({
-      //   ...data,
-      //   beneficiary_id: user.id,
-      //   location: { city: data.city, address: data.address },
-      //   status: 'open'
-      // })
+      // Создаём локацию
+      const location = await locationsService.create({
+        city: data.city,
+        address: data.address || '',
+        latitude: selectedCityData?.latitude || 0,
+        longitude: selectedCityData?.longitude || 0,
+        region: selectedCityData?.region || data.city
+      })
+
+      // Создаём заявку на помощь
+      await requestsService.create({
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        priority: data.priority,
+        contact_phone: data.contact_phone || user.phone || null,
+        contact_email: data.contact_email || user.email || null,
+        beneficiary_id: user.id,
+        location_id: location.id,
+        status: 'open'
+      })
 
       setSuccess(true)
       setTimeout(() => {
         navigate('/requests')
       }, 2000)
     } catch (error) {
-      console.error('Error creating request:', error)
-      alert(t('common.error'))
+      console.error('Ошибка при создании заявки:', error)
+      alert(t('common.error') || 'Произошла ошибка при создании заявки')
     } finally {
       setIsLoading(false)
     }
