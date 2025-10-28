@@ -1,18 +1,25 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { donorOffersService } from '../services/supabase'
 import { mockDonorOffers } from '../services/mockData'
 import { DonorOffer, OfferType, OfferStatus, HelpCategory } from '../types'
 import VerifiedBadge from '../components/VerifiedBadge'
+import { useLocationStore } from '../stores/locationStore'
+
+type ViewMode = 'grid' | 'table'
 
 export default function RegistryPage() {
   const { t } = useTranslation()
+  const { selectedCity } = useLocationStore()
   const [selectedType, setSelectedType] = useState<OfferType | 'all'>('all')
   const [selectedCategory, setSelectedCategory] = useState<HelpCategory | 'all'>('all')
   const [selectedStatus, setSelectedStatus] = useState<OfferStatus | 'all'>('all')
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    return (localStorage.getItem('registry-view-mode') as ViewMode) || 'grid'
+  })
 
-  const { data: offers, isLoading } = useQuery({
+  const { data: allOffers, isLoading } = useQuery({
     queryKey: ['donorOffers', selectedType, selectedCategory, selectedStatus],
     queryFn: async () => {
       try {
@@ -36,6 +43,22 @@ export default function RegistryPage() {
       }
     },
   })
+
+  // Фильтрация по городу
+  const offers = useMemo(() => {
+    if (!allOffers) return []
+    if (!selectedCity) return allOffers
+
+    return allOffers.filter(offer =>
+      offer.location.city === selectedCity.name
+    )
+  }, [allOffers, selectedCity])
+
+  // Функция переключения вида
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode)
+    localStorage.setItem('registry-view-mode', mode)
+  }
 
   // Функция маскировки телефона
   const maskPhone = (phone: string) => {
@@ -71,7 +94,44 @@ export default function RegistryPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold">{t('registry.title')}</h1>
-            <p className="text-gray-600 mt-2">{t('registry.subtitle')}</p>
+            <p className="text-gray-600 mt-2">
+              {t('registry.subtitle')}
+              {selectedCity && (
+                <span className="ml-2 text-primary-600 font-medium">
+                  • {selectedCity.name}
+                </span>
+              )}
+            </p>
+          </div>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center bg-white rounded-lg shadow-sm border border-gray-200 p-1">
+            <button
+              onClick={() => handleViewModeChange('grid')}
+              className={`p-2 rounded transition-colors ${
+                viewMode === 'grid'
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+              title="Grid view"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => handleViewModeChange('table')}
+              className={`p-2 rounded transition-colors ${
+                viewMode === 'table'
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+              title="Table view"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -131,6 +191,13 @@ export default function RegistryPage() {
           </div>
         </div>
 
+        {/* Results count */}
+        {!isLoading && offers && offers.length > 0 && (
+          <div className="text-sm text-gray-600 mb-4">
+            {t('registry.showing')}: <span className="font-semibold">{offers.length}</span> {t('registry.offers')}
+          </div>
+        )}
+
         {/* Offers List */}
         {isLoading ? (
           <div className="text-center py-12">
@@ -138,7 +205,9 @@ export default function RegistryPage() {
             <p className="mt-4 text-gray-600">{t('common.loading')}</p>
           </div>
         ) : offers && offers.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          viewMode === 'grid' ? (
+            /* Grid View */
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {offers.map((offer) => (
               <div key={offer.id} className="card">
                 <div className="flex justify-between items-start mb-3 flex-wrap gap-2">
@@ -204,6 +273,92 @@ export default function RegistryPage() {
               </div>
             ))}
           </div>
+          ) : (
+            /* Table View */
+            <div className="bg-white rounded-lg shadow-md overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.title')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.type')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.category')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.city')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.donor')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.status')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.actions')}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {offers.map((offer) => (
+                    <tr key={offer.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{offer.title}</div>
+                          <div className="text-sm text-gray-500 line-clamp-2">{offer.description}</div>
+                          {offer.quantity && offer.unit && (
+                            <div className="text-xs text-gray-400 mt-1">
+                              {offer.quantity} {offer.unit}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getTypeColor(offer.type)}`}>
+                          {offer.type === 'goods' ? t('registry.goods') : t('registry.service')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {t(`categories.${offer.category}`)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {offer.location.city}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-1 text-sm text-gray-900">
+                          {offer.donor.first_name} {offer.donor.last_name}
+                          <VerifiedBadge verified={offer.donor.verified || false} size="sm" />
+                        </div>
+                        {offer.contact_phone && (
+                          <div className="text-xs text-gray-500">{maskPhone(offer.contact_phone)}</div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(offer.status)}`}>
+                          {offer.status === 'active'
+                            ? t('registry.statusActive')
+                            : offer.status === 'reserved'
+                            ? t('registry.statusReserved')
+                            : t('registry.statusCompleted')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <button
+                          className="btn-primary text-xs py-1 px-3"
+                          disabled={offer.status !== 'active'}
+                        >
+                          {offer.status === 'active' ? t('registry.contact') : t('registry.notAvailable')}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         ) : (
           <div className="text-center py-12 bg-white rounded-lg">
             <p className="text-gray-600">{t('registry.noOffers')}</p>

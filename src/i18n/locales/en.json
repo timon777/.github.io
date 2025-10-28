@@ -198,7 +198,12 @@
     "allStatuses": "All statuses",
     "statusActive": "Active",
     "statusReserved": "Reserved",
-    "statusCompleted": "Completed"
+    "statusCompleted": "Completed",
+    "showing": "Showing",
+    "offers": "offers",
+    "city": "City",
+    "donor": "Donor",
+    "actions": "Actions"
   },
   "demo": {
     "banner": "DEMO MODE: Using test data. Database is not connected.",

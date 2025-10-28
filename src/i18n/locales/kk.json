@@ -198,7 +198,12 @@
     "allStatuses": "Барлық мәртебелер",
     "statusActive": "Белсенді",
     "statusReserved": "Резервтелген",
-    "statusCompleted": "Аяқталды"
+    "statusCompleted": "Аяқталды",
+    "showing": "Көрсетілген",
+    "offers": "ұсыныстар",
+    "city": "Қала",
+    "donor": "Донор",
+    "actions": "Әрекеттер"
   },
   "demo": {
     "banner": "DEMO РЕЖИМІ: Сынақ деректер қолданылады. Дерекқор қосылмаған.",

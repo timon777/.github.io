@@ -198,7 +198,12 @@
     "allStatuses": "Все статусы",
     "statusActive": "Активно",
     "statusReserved": "Зарезервировано",
-    "statusCompleted": "Завершено"
+    "statusCompleted": "Завершено",
+    "showing": "Показано",
+    "offers": "предложений",
+    "city": "Город",
+    "donor": "Донор",
+    "actions": "Действия"
   },
   "demo": {
     "banner": "DEMO РЕЖИМ: Используются тестовые данные. База данных не подключена.",

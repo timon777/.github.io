@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
 import LanguageSwitcher from './LanguageSwitcher'
+import CitySelector from './CitySelector'
 import VerifiedBadge from './VerifiedBadge'
 
 export default function Header() {
@@ -53,7 +54,8 @@ export default function Header() {
           </nav>
 
           {/* Desktop Auth buttons & Language Switcher */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2">
+            <CitySelector />
             <LanguageSwitcher />
 
             {isAuthenticated && user ? (
@@ -93,6 +95,7 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center space-x-2">
+            <CitySelector />
             <LanguageSwitcher />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
