@@ -27,6 +27,13 @@
     "volunteers": "Volunteers",
     "map": "Map"
   },
+  "emergency": {
+    "badge": "Emergency mode is active",
+    "description": "Requests receive additional priority and are sorted by criticality.",
+    "activate": "Enable emergency mode",
+    "deactivate": "Disable emergency mode",
+    "activatedAt": "Enabled: {{date}}"
+  },
   "home": {
     "title": "Social Registry of Targeted Assistance",
     "subtitle": "Real help to real people with full transparency",
@@ -135,7 +142,8 @@
     "low": "Low",
     "open": "Open",
     "inProgress": "In Progress",
-    "closed": "Closed"
+    "closed": "Closed",
+    "priorityScore": "Priority score: {{score}}"
   },
   "shelters": {
     "title": "Shelters",

@@ -2,17 +2,19 @@ import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { requestsService } from '../services/supabase'
+import { requestsService, enhanceRequestsWithPriority } from '../services/supabase'
 import { mockHelpRequests } from '../services/mockData'
-import { HelpRequest, HelpCategory, RequestStatus, Priority } from '../types'
+import { HelpCategory, RequestStatus, Priority } from '../types'
 import { useLocationStore } from '../stores/locationStore'
 import VerifiedBadge from '../components/VerifiedBadge'
+import { useEmergencyStore } from '../stores/emergencyStore'
 
 type ViewMode = 'grid' | 'table'
 
 export default function RequestsPage() {
   const { t } = useTranslation()
   const { selectedCity } = useLocationStore()
+  const { isEmergency, lastActivatedAt } = useEmergencyStore()
   const [selectedCategory, setSelectedCategory] = useState<HelpCategory | 'all'>('all')
   const [selectedStatus, setSelectedStatus] = useState<RequestStatus | 'all'>('all')
   const [selectedPriority, setSelectedPriority] = useState<Priority | 'all'>('all')
@@ -29,31 +31,34 @@ export default function RequestsPage() {
           status: selectedStatus !== 'all' ? selectedStatus : undefined,
           priority: selectedPriority !== 'all' ? selectedPriority : undefined,
         })
-        // Если данные есть, возвращаем их
         if (data && data.length > 0) {
           return data
         }
-        // Если данных нет, возвращаем mock данные
-        return mockHelpRequests
+        return enhanceRequestsWithPriority(mockHelpRequests)
       } catch (error) {
         // При ошибке возвращаем mock данные
         if (import.meta.env.DEV) {
           console.warn('Failed to load requests from database, using mock data:', error)
         }
-        return mockHelpRequests
+        return enhanceRequestsWithPriority(mockHelpRequests)
       }
     },
   })
 
+  const prioritizedRequests = useMemo(() => {
+    if (!allRequests) return []
+    return enhanceRequestsWithPriority(allRequests)
+  }, [allRequests, isEmergency])
+
   // Фильтрация по городу
   const requests = useMemo(() => {
-    if (!allRequests) return []
-    if (!selectedCity) return allRequests
+    if (!prioritizedRequests) return []
+    if (!selectedCity) return prioritizedRequests
 
-    return allRequests.filter(request =>
+    return prioritizedRequests.filter(request =>
       request.location.city === selectedCity.name
     )
-  }, [allRequests, selectedCity])
+  }, [prioritizedRequests, selectedCity])
 
   // Функция переключения вида
   const handleViewModeChange = (mode: ViewMode) => {
@@ -101,10 +106,10 @@ export default function RequestsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* View Mode Toggle */}
-            <div className="flex items-center bg-white rounded-lg shadow-sm border p-1">
-              <button
+        <div className="flex items-center gap-3">
+          {/* View Mode Toggle */}
+          <div className="flex items-center bg-white rounded-lg shadow-sm border p-1">
+            <button
                 onClick={() => handleViewModeChange('grid')}
                 className={`p-2 rounded transition-colors ${
                   viewMode === 'grid'
@@ -137,6 +142,25 @@ export default function RequestsPage() {
             </Link>
           </div>
         </div>
+
+        {isEmergency && (
+          <div className="mb-6">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-3">
+              <svg className="w-6 h-6 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v4m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.66 1.73-3L13.73 4c-.77-1.34-2.69-1.34-3.46 0L3.34 16c-.77 1.34.19 3 1.73 3z" />
+              </svg>
+              <div>
+                <p className="font-semibold">{t('emergency.badge')}</p>
+                <p className="text-sm mt-1">{t('emergency.description')}</p>
+                {lastActivatedAt && (
+                  <p className="text-xs text-red-600 mt-2">
+                    {t('emergency.activatedAt', { date: new Date(lastActivatedAt).toLocaleString() })}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -238,6 +262,14 @@ export default function RequestsPage() {
                       {request.beneficiary.first_name} {request.beneficiary.last_name}
                       {request.beneficiary.verified && <VerifiedBadge verified={true} size="sm" className="ml-1" />}
                     </div>
+                    {typeof request.computed_priority === 'number' && (
+                      <div className="flex items-center text-xs text-gray-500">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.567-3 3.5S10.343 15 12 15s3-1.567 3-3.5S13.657 8 12 8zm0 0V5m0 13v-3m5.657-9.657L18 7m-12-2 1.343 1.343M19 12h2m-18 0h2" />
+                        </svg>
+                        {t('requests.priorityScore', { score: request.computed_priority })}
+                      </div>
+                    )}
                   </div>
 
                   <Link to={`/requests/${request.id}`} className="w-full btn-primary block text-center">
@@ -288,6 +320,11 @@ export default function RequestsPage() {
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(request.priority)}`}>
                           {t(`requests.${request.priority}`)}
                         </span>
+                        {typeof request.computed_priority === 'number' && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            {t('requests.priorityScore', { score: request.computed_priority })}
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(request.status)}`}>

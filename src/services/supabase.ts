@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../types/database'
+import type { HelpCategory, Priority, RequestStatus } from '../types'
 import {
   mockUsers,
   mockHelpRequests,
@@ -9,6 +10,68 @@ import {
   getMockAuthUser,
   setMockAuthUser,
 } from './mockData'
+import { getEmergencyState } from '../stores/emergencyStore'
+
+const PRIORITY_BASE_WEIGHT: Record<Priority, number> = {
+  urgent: 120,
+  high: 90,
+  medium: 60,
+  low: 40,
+}
+
+const CATEGORY_BOOST: Partial<Record<HelpCategory, number>> = {
+  medicine: 25,
+  medical_service: 25,
+  food: 15,
+  psychological_service: 15,
+  animal_care: 10,
+}
+
+const STATUS_BOOST: Partial<Record<RequestStatus, number>> = {
+  pending: 25,
+  approved: 15,
+  in_progress: 10,
+}
+
+const computeRequestPriorityScore = (request: any, isEmergency: boolean) => {
+  const base = PRIORITY_BASE_WEIGHT[(request.priority as Priority) ?? 'medium'] ?? 50
+  const categoryBoost = CATEGORY_BOOST[request.category as HelpCategory] ?? 0
+  const statusBoost = STATUS_BOOST[request.status as RequestStatus] ?? 0
+  const needsBoost = Array.isArray(request.needed_items)
+    ? Math.min(request.needed_items.length * 3, 15)
+    : 0
+  const responsesPenalty = Array.isArray(request.responses)
+    ? Math.min(request.responses.length * 4, 20)
+    : 0
+  const emergencyTagBoost = Array.isArray(request.tags) && request.tags.includes('emergency') ? 25 : 0
+
+  let score = base + categoryBoost + statusBoost + needsBoost + emergencyTagBoost - responsesPenalty
+
+  if (request.beneficiary?.verified === true) {
+    score += 5
+  }
+
+  if (isEmergency) {
+    score *= 1.2
+    if ((request.priority as Priority) === 'urgent' || request.status === 'pending') {
+      score += 25
+    }
+  }
+
+  return Math.max(0, Math.round(score))
+}
+
+const enhanceHelpRequest = (request: any, isEmergency: boolean) => ({
+  ...request,
+  computed_priority: computeRequestPriorityScore(request, isEmergency),
+})
+
+const enhanceHelpRequests = (requests: any[]) => {
+  const { isEmergency } = getEmergencyState()
+  return (requests ?? [])
+    .map((request) => enhanceHelpRequest(request, isEmergency))
+    .sort((a, b) => (b.computed_priority ?? 0) - (a.computed_priority ?? 0))
+}
 
 // Supabase configuration
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
@@ -162,7 +225,7 @@ export const requestsService = {
         data = data.filter((r) => r.priority === filters.priority)
       }
 
-      return data
+      return enhanceHelpRequests(data)
     }
 
     let query = supabase!
@@ -188,12 +251,14 @@ export const requestsService = {
 
     const { data, error } = await query
     if (error) throw error
-    return data
+    return enhanceHelpRequests(data)
   },
 
   async getById(id: string) {
     if (isDemoMode) {
-      return mockHelpRequests.find((r) => r.id === id) || null
+      const request = mockHelpRequests.find((r) => r.id === id)
+      if (!request) return null
+      return enhanceHelpRequests([request])[0] ?? null
     }
 
     const { data, error } = await supabase!
@@ -211,7 +276,7 @@ export const requestsService = {
       .single()
 
     if (error) throw error
-    return data
+    return data ? enhanceHelpRequests([data])[0] ?? null : null
   },
 
   async create(requestData: any) {
@@ -261,6 +326,8 @@ export const requestsService = {
     if (error) throw error
   },
 }
+
+export const enhanceRequestsWithPriority = (requests: any[]) => enhanceHelpRequests(requests)
 
 // Shelters service
 export const sheltersService = {
