@@ -1,85 +1,65 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { requestsService } from '../services/directus'
-import { HelpRequest, HelpCategory, RequestStatus } from '../types'
+import { useTranslation } from 'react-i18next'
+import { requestsService } from '../services/supabase'
+import { mockHelpRequests } from '../services/mockData'
+import { HelpRequest, HelpCategory, RequestStatus, Priority } from '../types'
+import { useLocationStore } from '../stores/locationStore'
+import VerifiedBadge from '../components/VerifiedBadge'
+
+type ViewMode = 'grid' | 'table'
 
 export default function RequestsPage() {
+  const { t } = useTranslation()
+  const { selectedCity } = useLocationStore()
   const [selectedCategory, setSelectedCategory] = useState<HelpCategory | 'all'>('all')
   const [selectedStatus, setSelectedStatus] = useState<RequestStatus | 'all'>('all')
-
-  // Temporary mock data for demonstration
-  const mockRequests: HelpRequest[] = [
-    {
-      id: '1',
-      title: 'Нужны продукты питания для многодетной семьи',
-      description: 'Семья с 4 детьми нуждается в продуктах: крупы, макароны, консервы',
-      category: 'food',
-      status: 'pending',
-      priority: 'high',
-      beneficiary: {
-        id: '1',
-        email: 'user@example.com',
-        first_name: 'Анна',
-        last_name: 'Иванова',
-        role: 'beneficiary',
-        verified: true,
-        created_at: '2025-01-01',
-      },
-      location: {
-        id: '1',
-        address: 'ул. Абая 150',
-        city: 'Алматы',
-        region: 'Алматы',
-        country: 'Казахстан',
-        latitude: 43.2220,
-        longitude: 76.8512,
-      },
-      images: [],
-      created_at: '2025-10-20',
-      updated_at: '2025-10-20',
-    },
-    {
-      id: '2',
-      title: 'Зимняя одежда для детей',
-      description: 'Необходима теплая зимняя одежда для детей 5 и 7 лет',
-      category: 'clothing',
-      status: 'approved',
-      priority: 'medium',
-      beneficiary: {
-        id: '2',
-        email: 'user2@example.com',
-        first_name: 'Марат',
-        last_name: 'Сарсенов',
-        role: 'beneficiary',
-        verified: true,
-        created_at: '2025-01-02',
-      },
-      location: {
-        id: '2',
-        address: 'мкр. Аксай-3, д. 25',
-        city: 'Алматы',
-        region: 'Алматы',
-        country: 'Казахстан',
-        latitude: 43.2566,
-        longitude: 76.9286,
-      },
-      images: [],
-      created_at: '2025-10-21',
-      updated_at: '2025-10-21',
-    },
-  ]
-
-  const { data: requests, isLoading } = useQuery({
-    queryKey: ['requests', selectedCategory, selectedStatus],
-    queryFn: () => mockRequests, // Replace with: requestsService.getAll()
+  const [selectedPriority, setSelectedPriority] = useState<Priority | 'all'>('all')
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    return (localStorage.getItem('requests-view-mode') as ViewMode) || 'grid'
   })
 
-  const filteredRequests = requests?.filter((req) => {
-    const categoryMatch = selectedCategory === 'all' || req.category === selectedCategory
-    const statusMatch = selectedStatus === 'all' || req.status === selectedStatus
-    return categoryMatch && statusMatch
+  const { data: allRequests, isLoading } = useQuery({
+    queryKey: ['helpRequests', selectedCategory, selectedStatus, selectedPriority],
+    queryFn: async () => {
+      try {
+        const data = await requestsService.getAll({
+          category: selectedCategory !== 'all' ? selectedCategory : undefined,
+          status: selectedStatus !== 'all' ? selectedStatus : undefined,
+          priority: selectedPriority !== 'all' ? selectedPriority : undefined,
+        })
+        // Если данные есть, возвращаем их
+        if (data && data.length > 0) {
+          return data
+        }
+        // Если данных нет, возвращаем mock данные
+        return mockHelpRequests
+      } catch (error) {
+        // При ошибке возвращаем mock данные
+        if (import.meta.env.DEV) {
+          console.warn('Failed to load requests from database, using mock data:', error)
+        }
+        return mockHelpRequests
+      }
+    },
   })
+
+  // Фильтрация по городу
+  const requests = useMemo(() => {
+    if (!allRequests) return []
+    if (!selectedCity) return allRequests
+
+    return allRequests.filter(request =>
+      request.location.city === selectedCity.name
+    )
+  }, [allRequests, selectedCity])
+
+  // Функция переключения вида
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode)
+    localStorage.setItem('requests-view-mode', mode)
+  }
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -112,49 +92,107 @@ export default function RequestsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Запросы помощи</h1>
-          <Link to="/create-request" className="btn-primary">
-            Создать запрос
-          </Link>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">{t('requests.title')}</h1>
+            <p className="text-gray-600 mt-1">
+              {t('registry.showing')} {requests?.length || 0} {t('requests.requests')}
+              {selectedCity && <span className="text-primary-600 font-semibold"> • {selectedCity.name}</span>}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* View Mode Toggle */}
+            <div className="flex items-center bg-white rounded-lg shadow-sm border p-1">
+              <button
+                onClick={() => handleViewModeChange('grid')}
+                className={`p-2 rounded transition-colors ${
+                  viewMode === 'grid'
+                    ? 'bg-primary-600 text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+                title="Grid view"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => handleViewModeChange('table')}
+                className={`p-2 rounded transition-colors ${
+                  viewMode === 'table'
+                    ? 'bg-primary-600 text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+                title="Table view"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+
+            <Link to="/create-request" className="btn-primary whitespace-nowrap">
+              {t('requests.createNew')}
+            </Link>
+          </div>
         </div>
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Категория
+                {t('registry.category')}
               </label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value as any)}
                 className="input-field"
               >
-                <option value="all">Все категории</option>
-                <option value="food">Продукты питания</option>
-                <option value="clothing">Одежда и обувь</option>
-                <option value="medicine">Медикаменты</option>
-                <option value="household">Бытовая техника</option>
-                <option value="transport">Транспорт</option>
-                <option value="animal_care">Помощь животным</option>
+                <option value="all">{t('categories.all')}</option>
+                <option value="food">{t('categories.food')}</option>
+                <option value="clothing">{t('categories.clothing')}</option>
+                <option value="medicine">{t('categories.medicine')}</option>
+                <option value="household">{t('categories.household')}</option>
+                <option value="transport">{t('categories.transport')}</option>
+                <option value="animal_care">{t('categories.animal_care')}</option>
+                <option value="medical_service">{t('categories.medical_service')}</option>
+                <option value="legal_service">{t('categories.legal_service')}</option>
+                <option value="psychological_service">{t('categories.psychological_service')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Статус
+                {t('requests.priority')}
+              </label>
+              <select
+                value={selectedPriority}
+                onChange={(e) => setSelectedPriority(e.target.value as any)}
+                className="input-field"
+              >
+                <option value="all">{t('requests.allPriorities')}</option>
+                <option value="urgent">{t('requests.urgent')}</option>
+                <option value="high">{t('requests.high')}</option>
+                <option value="medium">{t('requests.medium')}</option>
+                <option value="low">{t('requests.low')}</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('registry.status')}
               </label>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value as any)}
                 className="input-field"
               >
-                <option value="all">Все статусы</option>
-                <option value="pending">Ожидает проверки</option>
-                <option value="approved">Одобрено</option>
-                <option value="in_progress">В процессе</option>
-                <option value="completed">Завершено</option>
+                <option value="all">{t('requests.allStatuses')}</option>
+                <option value="open">{t('requests.open')}</option>
+                <option value="in_progress">{t('requests.inProgress')}</option>
+                <option value="closed">{t('requests.closed')}</option>
               </select>
             </div>
           </div>
@@ -164,51 +202,126 @@ export default function RequestsPage() {
         {isLoading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-gray-600">Загрузка...</p>
+            <p className="mt-4 text-gray-600">{t('common.loading')}</p>
           </div>
-        ) : filteredRequests && filteredRequests.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredRequests.map((request) => (
-              <div key={request.id} className="card">
-                <div className="flex justify-between items-start mb-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(request.priority)}`}>
-                    {request.priority === 'urgent' ? 'Срочно' : request.priority === 'high' ? 'Высокий' : request.priority === 'medium' ? 'Средний' : 'Низкий'}
-                  </span>
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(request.status)}`}>
-                    {request.status === 'pending' ? 'Ожидает' : request.status === 'approved' ? 'Одобрено' : request.status === 'in_progress' ? 'В процессе' : 'Завершено'}
-                  </span>
-                </div>
-
-                <h3 className="text-lg font-bold mb-2">{request.title}</h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                  {request.description}
-                </p>
-
-                <div className="space-y-2 text-sm text-gray-600 mb-4">
-                  <div className="flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {request.location.city}
+        ) : requests && requests.length > 0 ? (
+          viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {requests.map((request) => (
+                <div key={request.id} className="card hover:shadow-lg transition-shadow">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(request.priority)}`}>
+                      {t(`requests.${request.priority}`)}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(request.status)}`}>
+                      {request.status === 'open' ? t('requests.open') : request.status === 'in_progress' ? t('requests.inProgress') : t('requests.closed')}
+                    </span>
                   </div>
-                  <div className="flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    {request.beneficiary.first_name} {request.beneficiary.last_name}
-                  </div>
-                </div>
 
-                <button className="w-full btn-primary">
-                  Откликнуться
-                </button>
-              </div>
-            ))}
-          </div>
+                  <h3 className="text-lg font-bold mb-2">{request.title}</h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    {request.description}
+                  </p>
+
+                  <div className="space-y-2 text-sm text-gray-600 mb-4">
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {request.location.city}
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      {request.beneficiary.first_name} {request.beneficiary.last_name}
+                      {request.beneficiary.verified && <VerifiedBadge verified={true} size="sm" className="ml-1" />}
+                    </div>
+                  </div>
+
+                  <Link to={`/requests/${request.id}`} className="w-full btn-primary block text-center">
+                    {t('requests.viewDetails')}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg shadow-md overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('requests.title')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.category')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('requests.priority')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.status')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.city')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('requests.beneficiary')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('registry.actions')}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {requests.map((request) => (
+                    <tr key={request.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">{request.title}</div>
+                        <div className="text-sm text-gray-500 line-clamp-1">{request.description}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-gray-900">{t(`categories.${request.category}`)}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(request.priority)}`}>
+                          {t(`requests.${request.priority}`)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(request.status)}`}>
+                          {request.status === 'open' ? t('requests.open') : request.status === 'in_progress' ? t('requests.inProgress') : t('requests.closed')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {request.location.city}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <span className="text-sm text-gray-900">
+                            {request.beneficiary.first_name} {request.beneficiary.last_name}
+                          </span>
+                          {request.beneficiary.verified && <VerifiedBadge verified={true} size="sm" className="ml-1" />}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <Link
+                          to={`/requests/${request.id}`}
+                          className="text-primary-600 hover:text-primary-900 font-medium"
+                        >
+                          {t('requests.viewDetails')}
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         ) : (
           <div className="text-center py-12 bg-white rounded-lg">
-            <p className="text-gray-600">Запросы не найдены</p>
+            <p className="text-gray-600">{t('requests.noRequests')}</p>
           </div>
         )}
       </div>

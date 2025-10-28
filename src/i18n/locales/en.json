@@ -123,7 +123,19 @@
     "priority": "Priority",
     "status": "Status",
     "location": "Location",
-    "noRequests": "No requests"
+    "noRequests": "No requests found",
+    "requests": "requests",
+    "beneficiary": "Beneficiary",
+    "viewDetails": "View Details",
+    "allPriorities": "All Priorities",
+    "allStatuses": "All Statuses",
+    "urgent": "Urgent",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "open": "Open",
+    "inProgress": "In Progress",
+    "closed": "Closed"
   },
   "shelters": {
     "title": "Shelters",

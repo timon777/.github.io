@@ -123,7 +123,19 @@
     "priority": "Басымдық",
     "status": "Мәртебе",
     "location": "Орналасқан жері",
-    "noRequests": "Өтініштер жоқ"
+    "noRequests": "Өтініштер табылмады",
+    "requests": "өтініштер",
+    "beneficiary": "Мұқтаж",
+    "viewDetails": "Толығырақ",
+    "allPriorities": "Барлық басымдықтар",
+    "allStatuses": "Барлық мәртебелер",
+    "urgent": "Шұғыл",
+    "high": "Жоғары",
+    "medium": "Орташа",
+    "low": "Төмен",
+    "open": "Ашық",
+    "inProgress": "Орындалуда",
+    "closed": "Жабық"
   },
   "shelters": {
     "title": "Баспаналар",
