@@ -6,8 +6,10 @@ import RegisterPage from './pages/RegisterPage'
 import RequestsPage from './pages/RequestsPage'
 import RequestDetailPage from './pages/RequestDetailPage'
 import CreateRequestPage from './pages/CreateRequestPage'
+import EditRequestPage from './pages/EditRequestPage'
 import CreateOfferPage from './pages/CreateOfferPage'
 import OfferDetailPage from './pages/OfferDetailPage'
+import EditOfferPage from './pages/EditOfferPage'
 import ProfilePage from './pages/ProfilePage'
 import SheltersPage from './pages/SheltersPage'
 import VolunteersPage from './pages/VolunteersPage'
@@ -24,8 +26,24 @@ function App() {
         <Route path="register" element={<RegisterPage />} />
         <Route path="requests" element={<RequestsPage />} />
         <Route path="requests/:id" element={<RequestDetailPage />} />
+        <Route
+          path="requests/:id/edit"
+          element={
+            <ProtectedRoute requireRoles={['beneficiary', 'shelter', 'ngo', 'admin']}>
+              <EditRequestPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="registry" element={<RegistryPage />} />
         <Route path="offers/:id" element={<OfferDetailPage />} />
+        <Route
+          path="offers/:id/edit"
+          element={
+            <ProtectedRoute requireRoles={['donor', 'shelter', 'ngo', 'admin']}>
+              <EditOfferPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="shelters" element={<SheltersPage />} />
         <Route path="volunteers" element={<VolunteersPage />} />
         <Route path="map" element={<MapPage />} />

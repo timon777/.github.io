@@ -141,7 +141,8 @@
     "confirmDelete": "Are you sure you want to delete this request?",
     "created": "Created",
     "respond": "Respond",
-    "loginToRespond": "Login to respond to this request"
+    "loginToRespond": "Login to respond to this request",
+    "editRequest": "Edit Request"
   },
   "shelters": {
     "title": "Shelters",
@@ -232,7 +233,8 @@
     "completed": "Completed",
     "confirmDelete": "Are you sure you want to delete this offer?",
     "pcs": "pcs",
-    "loginToContact": "Login to contact donor"
+    "loginToContact": "Login to contact donor",
+    "editOffer": "Edit Offer"
   },
   "demo": {
     "banner": "DEMO MODE: Using test data. Database is not connected.",
