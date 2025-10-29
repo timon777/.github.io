@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -5,6 +6,8 @@ import { requestsService } from '../services/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useRoleAccess } from '../hooks/useRoleAccess'
 import VerifiedBadge from '../components/VerifiedBadge'
+import ResponseForm from '../components/ResponseForm'
+import ResponseList from '../components/ResponseList'
 
 export default function RequestDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -12,6 +15,7 @@ export default function RequestDetailPage() {
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const { canCreateOffers } = useRoleAccess()
+  const [showResponseForm, setShowResponseForm] = useState(false)
 
   const { data: request, isLoading } = useQuery({
     queryKey: ['helpRequest', id],
@@ -224,24 +228,47 @@ export default function RequestDetailPage() {
               </div>
             </div>
 
-            {/* Actions */}
-            {!isOwner && request.status === 'open' && (
-              <div className="border-t pt-6">
-                {canCreateOffers() ? (
-                  <button className="btn-primary w-full py-4 text-lg">
-                    {t('requests.respond')}
-                  </button>
-                ) : (
-                  <div className="text-center text-gray-600">
-                    <p className="mb-4">{t('requests.loginToRespond')}</p>
-                    <Link to="/login" className="btn-primary">
-                      {t('common.login')}
-                    </Link>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
+        </div>
+
+        {/* Response Section */}
+        <div className="mt-8">
+          {/* Response Form (for donors/volunteers) */}
+          {!isOwner && user && canCreateOffers() && request.status === 'open' && (
+            <div className="mb-8">
+              {!showResponseForm ? (
+                <button
+                  onClick={() => setShowResponseForm(true)}
+                  className="btn-primary w-full py-4 text-lg"
+                >
+                  {t('requests.respond')}
+                </button>
+              ) : (
+                <ResponseForm
+                  requestId={request.id}
+                  onSuccess={() => setShowResponseForm(false)}
+                  onCancel={() => setShowResponseForm(false)}
+                />
+              )}
+            </div>
+          )}
+
+          {/* Login prompt for non-authenticated users */}
+          {!isOwner && !user && request.status === 'open' && (
+            <div className="text-center text-gray-600 mb-8 bg-white rounded-lg shadow-md p-6">
+              <p className="mb-4">{t('requests.loginToRespond')}</p>
+              <Link to="/login" className="btn-primary">
+                {t('common.login')}
+              </Link>
+            </div>
+          )}
+
+          {/* Response List */}
+          {id && (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <ResponseList requestId={id} isOwner={!!isOwner} />
+            </div>
+          )}
         </div>
 
         {/* Back Button */}

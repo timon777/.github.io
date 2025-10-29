@@ -609,6 +609,140 @@ export const donorOffersService = {
   },
 }
 
+// Responses service
+export const responsesService = {
+  async getAll(filters?: { request_id?: string; donor_id?: string; status?: string }) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение откликов', filters)
+      return []
+    }
+
+    let query = supabase!
+      .from('responses')
+      .select(`
+        *,
+        request:help_requests(*,
+          beneficiary:users(*),
+          location:locations(*)
+        ),
+        donor:users(*),
+        offered_items(*)
+      `)
+      .order('created_at', { ascending: false })
+
+    if (filters?.request_id) {
+      query = query.eq('request_id', filters.request_id)
+    }
+    if (filters?.donor_id) {
+      query = query.eq('donor_id', filters.donor_id)
+    }
+    if (filters?.status) {
+      query = query.eq('status', filters.status)
+    }
+
+    const { data, error } = await query
+
+    if (error) throw error
+    return data
+  },
+
+  async getById(id: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение отклика', id)
+      return null
+    }
+
+    const { data, error } = await supabase!
+      .from('responses')
+      .select(`
+        *,
+        request:help_requests(*,
+          beneficiary:users(*),
+          location:locations(*)
+        ),
+        donor:users(*),
+        offered_items(*)
+      `)
+      .eq('id', id)
+      .single()
+
+    if (error) throw error
+    return data
+  },
+
+  async create(responseData: {
+    request_id: string
+    donor_id: string
+    message: string
+    offered_items?: Array<{ name: string; quantity: number; unit: string }>
+  }) {
+    if (isDemoMode) {
+      console.log('✅ Demo: создание отклика', responseData)
+      return { id: 'demo-response-' + Date.now() } as any
+    }
+
+    // Create response
+    const { data: response, error: responseError } = await supabase!
+      .from('responses')
+      .insert({
+        request_id: responseData.request_id,
+        donor_id: responseData.donor_id,
+        message: responseData.message,
+        status: 'pending',
+      })
+      .select()
+      .single()
+
+    if (responseError) throw responseError
+
+    // Create offered items if provided
+    if (responseData.offered_items && responseData.offered_items.length > 0) {
+      const offeredItems = responseData.offered_items.map((item) => ({
+        response_id: response.id,
+        name: item.name,
+        quantity: item.quantity,
+        unit: item.unit,
+      }))
+
+      const { error: itemsError } = await supabase!
+        .from('offered_items')
+        .insert(offeredItems)
+
+      if (itemsError) throw itemsError
+    }
+
+    return response
+  },
+
+  async updateStatus(id: string, status: 'pending' | 'accepted' | 'rejected') {
+    if (isDemoMode) {
+      console.log('✅ Demo: обновление статуса отклика', id, status)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('responses')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id)
+
+    if (error) throw error
+  },
+
+  async delete(id: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: удаление отклика', id)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('responses')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+  },
+}
+
 // Storage service for file uploads
 export const storageService = {
   async uploadFile(bucket: string, path: string, file: File) {
