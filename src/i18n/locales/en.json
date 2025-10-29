@@ -135,7 +135,13 @@
     "low": "Low",
     "open": "Open",
     "inProgress": "In Progress",
-    "closed": "Closed"
+    "closed": "Closed",
+    "backToRequests": "Back to Requests",
+    "notFound": "Request not found",
+    "confirmDelete": "Are you sure you want to delete this request?",
+    "created": "Created",
+    "respond": "Respond",
+    "loginToRespond": "Login to respond to this request"
   },
   "shelters": {
     "title": "Shelters",

@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import RequestsPage from './pages/RequestsPage'
+import RequestDetailPage from './pages/RequestDetailPage'
 import CreateRequestPage from './pages/CreateRequestPage'
 import CreateOfferPage from './pages/CreateOfferPage'
 import OfferDetailPage from './pages/OfferDetailPage'
@@ -22,6 +23,7 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="requests" element={<RequestsPage />} />
+        <Route path="requests/:id" element={<RequestDetailPage />} />
         <Route path="registry" element={<RegistryPage />} />
         <Route path="offers/:id" element={<OfferDetailPage />} />
         <Route path="shelters" element={<SheltersPage />} />
