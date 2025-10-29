@@ -6,13 +6,18 @@ import { requestsService } from '../services/supabase'
 import { mockHelpRequests } from '../services/mockData'
 import { HelpRequest, HelpCategory, RequestStatus, Priority } from '../types'
 import { useLocationStore } from '../stores/locationStore'
+import { useEmergencyStore } from '../stores/emergencyStore'
+import { sortByPriority, calculatePriorityScore } from '../utils/priorityCalculator'
 import VerifiedBadge from '../components/VerifiedBadge'
+import VulnerableCategoryBadges from '../components/VulnerableCategoryBadges'
+import EmergencyToggle from '../components/EmergencyToggle'
 
 type ViewMode = 'grid' | 'table'
 
 export default function RequestsPage() {
   const { t } = useTranslation()
   const { selectedCity } = useLocationStore()
+  const { isEmergencyMode } = useEmergencyStore()
   const [selectedCategory, setSelectedCategory] = useState<HelpCategory | 'all'>('all')
   const [selectedStatus, setSelectedStatus] = useState<RequestStatus | 'all'>('all')
   const [selectedPriority, setSelectedPriority] = useState<Priority | 'all'>('all')
@@ -45,15 +50,21 @@ export default function RequestsPage() {
     },
   })
 
-  // Фильтрация по городу
+  // Фильтрация по городу и автоматическая сортировка по приоритету
   const requests = useMemo(() => {
     if (!allRequests) return []
-    if (!selectedCity) return allRequests
 
-    return allRequests.filter(request =>
-      request.location.city === selectedCity.name
-    )
-  }, [allRequests, selectedCity])
+    // Фильтруем по городу
+    let filtered = allRequests
+    if (selectedCity) {
+      filtered = filtered.filter(request =>
+        request.location.city === selectedCity.name
+      )
+    }
+
+    // Автоматически сортируем по приоритету (с учетом экстренного режима)
+    return sortByPriority(filtered, isEmergencyMode)
+  }, [allRequests, selectedCity, isEmergencyMode])
 
   // Функция переключения вида
   const handleViewModeChange = (mode: ViewMode) => {
@@ -102,6 +113,9 @@ export default function RequestsPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Emergency Mode Toggle (admin only) */}
+            <EmergencyToggle />
+
             {/* View Mode Toggle */}
             <div className="flex items-center bg-white rounded-lg shadow-sm border p-1">
               <button
@@ -223,6 +237,25 @@ export default function RequestsPage() {
                     {request.description}
                   </p>
 
+                  {/* Vulnerable Category Badges */}
+                  {(request.vulnerable_categories?.length || request.has_children || request.has_elderly || request.has_disabled) && (
+                    <div className="mb-3">
+                      <VulnerableCategoryBadges
+                        categories={request.vulnerable_categories}
+                        hasChildren={request.has_children}
+                        hasElderly={request.has_elderly}
+                        hasDisabled={request.has_disabled}
+                      />
+                    </div>
+                  )}
+
+                  {/* Priority Score */}
+                  {isEmergencyMode && (
+                    <div className="mb-3 text-xs text-gray-600">
+                      {t('emergency.priorityScore')}: <span className="font-bold text-primary-600">{calculatePriorityScore(request, isEmergencyMode)}</span>
+                    </div>
+                  )}
+
                   <div className="space-y-2 text-sm text-gray-600 mb-4">
                     <div className="flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,6 +297,9 @@ export default function RequestsPage() {
                       {t('registry.status')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('vulnerable.categories')}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {t('registry.city')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -293,6 +329,14 @@ export default function RequestsPage() {
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(request.status)}`}>
                           {request.status === 'open' ? t('requests.open') : request.status === 'in_progress' ? t('requests.inProgress') : t('requests.closed')}
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <VulnerableCategoryBadges
+                          categories={request.vulnerable_categories}
+                          hasChildren={request.has_children}
+                          hasElderly={request.has_elderly}
+                          hasDisabled={request.has_disabled}
+                        />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {request.location.city}

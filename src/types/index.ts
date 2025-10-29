@@ -44,6 +44,9 @@ export type RequestStatus = 'pending' | 'approved' | 'in_progress' | 'completed'
 
 export type Priority = 'low' | 'medium' | 'high' | 'urgent'
 
+// Vulnerable categories for priority calculation
+export type VulnerableCategory = 'children' | 'elderly' | 'disabled' | 'pregnant' | 'large_family'
+
 // Help request
 export interface HelpRequest {
   id: string
@@ -61,6 +64,13 @@ export interface HelpRequest {
   completed_at?: string
   volunteers?: User[]
   responses?: Response[]
+  // Vulnerable categories for priority calculation
+  vulnerable_categories?: VulnerableCategory[]
+  has_children?: boolean
+  has_elderly?: boolean
+  has_disabled?: boolean
+  // Calculated priority score
+  priority_score?: number
 }
 
 // Needed items

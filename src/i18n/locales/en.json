@@ -17,7 +17,8 @@
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
-    "verified": "Verified"
+    "verified": "Verified",
+    "optional": "optional"
   },
   "nav": {
     "home": "Home",
@@ -240,6 +241,29 @@
     "banner": "DEMO MODE: Using test data. Database is not connected.",
     "switchToReal": "Switch to real data",
     "switchToDemo": "Switch to demo data"
+  },
+  "emergency": {
+    "modeActive": "EMERGENCY MODE ACTIVE",
+    "reason": "Reason",
+    "since": "Active since",
+    "priorityBoostActive": "Vulnerable categories prioritization active",
+    "priorityScore": "Priority Score",
+    "activate": "Activate Emergency Mode",
+    "deactivate": "Deactivate Emergency Mode",
+    "activateTitle": "Emergency Mode Activation",
+    "activateDescription": "Emergency mode automatically increases priority of all requests and applies additional multipliers for vulnerable categories (children, elderly, disabled).",
+    "reasonLabel": "Activation reason",
+    "reasonPlaceholder": "E.g.: Flooding in region, mass evacuation...",
+    "confirmActivate": "Activate",
+    "confirmDeactivate": "Are you sure you want to deactivate emergency mode?"
+  },
+  "vulnerable": {
+    "categories": "Vulnerable Categories",
+    "children": "Children",
+    "elderly": "Elderly",
+    "disabled": "Disabled",
+    "pregnant": "Pregnant",
+    "large_family": "Large Family"
   },
   "footer": {
     "about": "About",
