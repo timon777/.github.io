@@ -14,8 +14,6 @@ interface RequestForm {
   priority: Priority
   address: string
   city: string
-  contact_phone?: string
-  contact_email?: string
 }
 
 export default function CreateRequestPage() {
@@ -33,8 +31,6 @@ export default function CreateRequestPage() {
   } = useForm<RequestForm>({
     defaultValues: {
       city: selectedCity?.name || 'Астана',
-      contact_phone: user?.phone || '',
-      contact_email: user?.email || '',
     }
   })
 
@@ -65,8 +61,6 @@ export default function CreateRequestPage() {
         description: data.description,
         category: data.category,
         priority: data.priority,
-        contact_phone: data.contact_phone || user.phone || null,
-        contact_email: data.contact_email || user.email || null,
         beneficiary_id: user.id,
         location_id: location.id,
         status: 'open'
@@ -204,35 +198,6 @@ export default function CreateRequestPage() {
                   className="input-field"
                   placeholder="Улица, дом, квартира..."
                 />
-              </div>
-            </div>
-
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold mb-4">Контактная информация</h3>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Телефон
-                  </label>
-                  <input
-                    type="tel"
-                    {...register('contact_phone')}
-                    className="input-field"
-                    placeholder="+7 777 123 4567"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    {...register('contact_email')}
-                    className="input-field"
-                    placeholder="email@example.com"
-                  />
-                </div>
               </div>
             </div>
 
