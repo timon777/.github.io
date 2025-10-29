@@ -26,7 +26,8 @@
     "registry": "Registry",
     "shelters": "Shelters",
     "volunteers": "Volunteers",
-    "map": "Map"
+    "map": "Map",
+    "dashboard": "Dashboard"
   },
   "home": {
     "title": "Social Registry of Targeted Assistance",
@@ -287,6 +288,56 @@
     "confirmAccept": "Are you sure you want to accept this response?",
     "confirmReject": "Are you sure you want to reject this response?",
     "contactInfo": "Contact Information"
+  },
+  "dashboard": {
+    "quickActions": "Quick Actions",
+    "viewAll": "View All",
+    "beneficiary": {
+      "title": "Beneficiary Dashboard",
+      "subtitle": "Manage your requests and responses",
+      "totalRequests": "Total Requests",
+      "openRequests": "Open Requests",
+      "pendingResponses": "Pending Responses",
+      "acceptedResponses": "Accepted Responses",
+      "myRequests": "My Requests",
+      "viewAllRequests": "View All Requests",
+      "noRequests": "You have no requests yet",
+      "recentResponses": "Recent Responses",
+      "respondedTo": "Response to",
+      "viewRequest": "View Request",
+      "noResponses": "No responses to your requests yet"
+    },
+    "donor": {
+      "title": "Donor Dashboard",
+      "subtitle": "Manage your offers and responses",
+      "totalOffers": "Total Offers",
+      "activeOffers": "Active Offers",
+      "totalResponses": "Total Responses",
+      "acceptedResponses": "Accepted Responses",
+      "myOffers": "My Offers",
+      "viewAllOffers": "View All Offers",
+      "browseRequests": "Browse Requests",
+      "noOffers": "You have no offers yet",
+      "myResponses": "My Responses",
+      "requestFrom": "Request from",
+      "viewRequest": "View Request",
+      "noResponses": "You haven't responded to any requests yet"
+    },
+    "admin": {
+      "title": "Admin Dashboard",
+      "subtitle": "Platform Management",
+      "platformStats": "Platform Statistics",
+      "totalUsers": "Total Users",
+      "totalRequests": "Total Requests",
+      "totalOffers": "Total Offers",
+      "totalResponses": "Total Responses",
+      "requestsStats": "Requests Statistics",
+      "openRequests": "Open Requests",
+      "urgentRequests": "Urgent Requests",
+      "pendingResponses": "Pending Responses",
+      "recentRequests": "Recent Requests",
+      "recentOffers": "Recent Offers"
+    }
   },
   "footer": {
     "about": "About",

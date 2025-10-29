@@ -15,6 +15,9 @@ import SheltersPage from './pages/SheltersPage'
 import VolunteersPage from './pages/VolunteersPage'
 import MapPage from './pages/MapPage'
 import RegistryPage from './pages/RegistryPage'
+import BeneficiaryDashboard from './pages/BeneficiaryDashboard'
+import DonorDashboard from './pages/DonorDashboard'
+import AdminDashboard from './pages/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -70,6 +73,32 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Dashboard routes */}
+        <Route
+          path="dashboard/beneficiary"
+          element={
+            <ProtectedRoute requireRoles={['beneficiary', 'shelter', 'ngo', 'admin']}>
+              <BeneficiaryDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="dashboard/donor"
+          element={
+            <ProtectedRoute requireRoles={['donor', 'shelter', 'ngo', 'admin']}>
+              <DonorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="dashboard/admin"
+          element={
+            <ProtectedRoute requireRoles={['admin']}>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

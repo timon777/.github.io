@@ -73,6 +73,18 @@ export default function Header() {
                   </Link>
                 )}
                 <Link
+                  to={
+                    user.role === 'admin'
+                      ? '/dashboard/admin'
+                      : user.role === 'donor'
+                      ? '/dashboard/donor'
+                      : '/dashboard/beneficiary'
+                  }
+                  className="text-gray-700 hover:text-primary-600 transition-colors"
+                >
+                  {t('nav.dashboard')}
+                </Link>
+                <Link
                   to="/profile"
                   className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors"
                 >
@@ -168,6 +180,19 @@ export default function Header() {
               <div className="border-t border-gray-200 pt-4 space-y-3">
                 {isAuthenticated && user ? (
                   <>
+                    <Link
+                      to={
+                        user.role === 'admin'
+                          ? '/dashboard/admin'
+                          : user.role === 'donor'
+                          ? '/dashboard/donor'
+                          : '/dashboard/beneficiary'
+                      }
+                      className="text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 block"
+                      onClick={closeMobileMenu}
+                    >
+                      {t('nav.dashboard')}
+                    </Link>
                     <Link
                       to="/profile"
                       className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors px-2 py-1"

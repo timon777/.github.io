@@ -26,7 +26,8 @@
     "registry": "Реестр",
     "shelters": "Приюты",
     "volunteers": "Волонтёры",
-    "map": "Карта"
+    "map": "Карта",
+    "dashboard": "Личный кабинет"
   },
   "home": {
     "title": "Социальный реестр адресной помощи",
@@ -287,6 +288,56 @@
     "confirmAccept": "Вы уверены, что хотите принять этот отклик?",
     "confirmReject": "Вы уверены, что хотите отклонить этот отклик?",
     "contactInfo": "Контактная информация"
+  },
+  "dashboard": {
+    "quickActions": "Быстрые действия",
+    "viewAll": "Смотреть все",
+    "beneficiary": {
+      "title": "Личный кабинет нуждающегося",
+      "subtitle": "Управляйте своими заявками и откликами",
+      "totalRequests": "Всего заявок",
+      "openRequests": "Открытых заявок",
+      "pendingResponses": "Ожидающих откликов",
+      "acceptedResponses": "Принятых откликов",
+      "myRequests": "Мои заявки",
+      "viewAllRequests": "Все заявки",
+      "noRequests": "У вас пока нет заявок",
+      "recentResponses": "Недавние отклики",
+      "respondedTo": "Отклик на",
+      "viewRequest": "Посмотреть заявку",
+      "noResponses": "Пока нет откликов на ваши заявки"
+    },
+    "donor": {
+      "title": "Личный кабинет донора",
+      "subtitle": "Управляйте своими предложениями и откликами",
+      "totalOffers": "Всего предложений",
+      "activeOffers": "Активных предложений",
+      "totalResponses": "Всего откликов",
+      "acceptedResponses": "Принятых откликов",
+      "myOffers": "Мои предложения",
+      "viewAllOffers": "Все предложения",
+      "browseRequests": "Смотреть заявки",
+      "noOffers": "У вас пока нет предложений",
+      "myResponses": "Мои отклики",
+      "requestFrom": "Заявка от",
+      "viewRequest": "Посмотреть заявку",
+      "noResponses": "Вы еще не откликались на заявки"
+    },
+    "admin": {
+      "title": "Панель администратора",
+      "subtitle": "Управление платформой",
+      "platformStats": "Статистика платформы",
+      "totalUsers": "Всего пользователей",
+      "totalRequests": "Всего заявок",
+      "totalOffers": "Всего предложений",
+      "totalResponses": "Всего откликов",
+      "requestsStats": "Статистика заявок",
+      "openRequests": "Открытых заявок",
+      "urgentRequests": "Срочных заявок",
+      "pendingResponses": "Ожидающих откликов",
+      "recentRequests": "Недавние заявки",
+      "recentOffers": "Недавние предложения"
+    }
   },
   "footer": {
     "about": "О платформе",

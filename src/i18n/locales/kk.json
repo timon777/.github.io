@@ -26,7 +26,8 @@
     "registry": "Тізілім",
     "shelters": "Баспаналар",
     "volunteers": "Волонтерлер",
-    "map": "Карта"
+    "map": "Карта",
+    "dashboard": "Жеке кабинет"
   },
   "home": {
     "title": "Әлеуметтік мекенжайлы көмек тізілімі",
@@ -287,6 +288,56 @@
     "confirmAccept": "Бұл жауапты қабылдағыңыз келе ме?",
     "confirmReject": "Бұл жауапты қабылдамағыңыз келе ме?",
     "contactInfo": "Байланыс ақпараты"
+  },
+  "dashboard": {
+    "quickActions": "Жылдам әрекеттер",
+    "viewAll": "Барлығын көру",
+    "beneficiary": {
+      "title": "Мұқтаждың жеке кабинеті",
+      "subtitle": "Өтініштер мен жауаптарды басқару",
+      "totalRequests": "Барлық өтініштер",
+      "openRequests": "Ашық өтініштер",
+      "pendingResponses": "Күтілетін жауаптар",
+      "acceptedResponses": "Қабылданған жауаптар",
+      "myRequests": "Менің өтініштерім",
+      "viewAllRequests": "Барлық өтініштер",
+      "noRequests": "Әлі өтініштер жоқ",
+      "recentResponses": "Соңғы жауаптар",
+      "respondedTo": "Жауап",
+      "viewRequest": "Өтінішті көру",
+      "noResponses": "Өтініштерге әлі жауап жоқ"
+    },
+    "donor": {
+      "title": "Донордың жеке кабинеті",
+      "subtitle": "Ұсыныстар мен жауаптарды басқару",
+      "totalOffers": "Барлық ұсыныстар",
+      "activeOffers": "Белсенді ұсыныстар",
+      "totalResponses": "Барлық жауаптар",
+      "acceptedResponses": "Қабылданған жауаптар",
+      "myOffers": "Менің ұсыныстарым",
+      "viewAllOffers": "Барлық ұсыныстар",
+      "browseRequests": "Өтініштерді көру",
+      "noOffers": "Әлі ұсыныстар жоқ",
+      "myResponses": "Менің жауаптарым",
+      "requestFrom": "Өтініш",
+      "viewRequest": "Өтінішті көру",
+      "noResponses": "Әлі өтініштерге жауап берген жоқсыз"
+    },
+    "admin": {
+      "title": "Әкімші панелі",
+      "subtitle": "Платформаны басқару",
+      "platformStats": "Платформа статистикасы",
+      "totalUsers": "Барлық пайдаланушылар",
+      "totalRequests": "Барлық өтініштер",
+      "totalOffers": "Барлық ұсыныстар",
+      "totalResponses": "Барлық жауаптар",
+      "requestsStats": "Өтініштер статистикасы",
+      "openRequests": "Ашық өтініштер",
+      "urgentRequests": "Шұғыл өтініштер",
+      "pendingResponses": "Күтілетін жауаптар",
+      "recentRequests": "Соңғы өтініштер",
+      "recentOffers": "Соңғы ұсыныстар"
+    }
   },
   "footer": {
     "about": "Платформа туралы",
