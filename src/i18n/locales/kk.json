@@ -376,5 +376,24 @@
     "priorityLowest": "Төмен басымдылық",
     "distanceNearest": "Жақын",
     "clearAll": "Барлығын тазалау"
+  },
+  "notifications": {
+    "title": "Хабарландырулар",
+    "markAllRead": "Барлығын оқылды деп белгілеу",
+    "empty": "Жаңа хабарландырулар жоқ",
+    "viewAll": "Барлық хабарландыруларды көру",
+    "justNow": "жаңа ғана",
+    "minutesAgo": "{{count}} мин. бұрын",
+    "hoursAgo": "{{count}} сағ. бұрын",
+    "daysAgo": "{{count}} күн бұрын"
+  },
+  "messages": {
+    "title": "Хабарламалар",
+    "noMessages": "Хабарламалар жоқ",
+    "send": "Жіберу",
+    "typePlaceholder": "Хабарлама жазыңыз...",
+    "startChat": "Чат бастау",
+    "chats": "Чаттар",
+    "noChats": "Белсенді чаттар жоқ"
   }
 }

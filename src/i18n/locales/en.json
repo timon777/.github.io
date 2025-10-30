@@ -376,5 +376,24 @@
     "priorityLowest": "Lowest priority",
     "distanceNearest": "Nearest",
     "clearAll": "Clear all"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "empty": "No new notifications",
+    "viewAll": "View all notifications",
+    "justNow": "just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  },
+  "messages": {
+    "title": "Messages",
+    "noMessages": "No messages",
+    "send": "Send",
+    "typePlaceholder": "Type a message...",
+    "startChat": "Start chat",
+    "chats": "Chats",
+    "noChats": "No active chats"
   }
 }

@@ -6,6 +6,7 @@ import { useRoleAccess } from '../hooks/useRoleAccess'
 import LanguageSwitcher from './LanguageSwitcher'
 import CitySelector from './CitySelector'
 import VerifiedBadge from './VerifiedBadge'
+import NotificationDropdown from './NotificationDropdown'
 
 export default function Header() {
   const { t } = useTranslation()
@@ -128,6 +129,9 @@ export default function Header() {
                     )}
                   </div>
                 )}
+
+                {/* Notification Dropdown */}
+                <NotificationDropdown />
 
                 {/* Profile Dropdown */}
                 <div ref={profileRef} className="relative">

@@ -376,5 +376,24 @@
     "priorityLowest": "Низкий приоритет",
     "distanceNearest": "Ближайшие",
     "clearAll": "Очистить все"
+  },
+  "notifications": {
+    "title": "Уведомления",
+    "markAllRead": "Отметить все прочитанными",
+    "empty": "Нет новых уведомлений",
+    "viewAll": "Смотреть все уведомления",
+    "justNow": "только что",
+    "minutesAgo": "{{count}} мин. назад",
+    "hoursAgo": "{{count}} ч. назад",
+    "daysAgo": "{{count}} дн. назад"
+  },
+  "messages": {
+    "title": "Сообщения",
+    "noMessages": "Нет сообщений",
+    "send": "Отправить",
+    "typePlaceholder": "Напишите сообщение...",
+    "startChat": "Начать чат",
+    "chats": "Чаты",
+    "noChats": "Нет активных чатов"
   }
 }

@@ -764,4 +764,343 @@ export const storageService = {
 
     if (error) throw error
   },
+
+  async uploadImage(file: File, folder: 'users' | 'requests' | 'offers' | 'messages') {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
+    const filePath = `${folder}/${fileName}`
+
+    const { data, error } = await this.uploadFile('images', filePath, file)
+    if (error) throw error
+
+    const publicUrl = await this.getPublicUrl('images', filePath)
+    return { path: filePath, url: publicUrl }
+  },
+}
+
+// Notifications service (Этап 1)
+export const notificationsService = {
+  async getAll(userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение уведомлений', userId)
+      return []
+    }
+
+    const { data, error } = await supabase!
+      .from('notifications')
+      .select(`
+        *,
+        from_user:users!notifications_from_user_id_fkey(*)
+      `)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return data
+  },
+
+  async getUnreadCount(userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение количества непрочитанных', userId)
+      return 0
+    }
+
+    const { count, error } = await supabase!
+      .from('notifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('read', false)
+
+    if (error) throw error
+    return count || 0
+  },
+
+  async markAsRead(notificationId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: уведомление прочитано', notificationId)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('notifications')
+      .update({ read: true })
+      .eq('id', notificationId)
+
+    if (error) throw error
+  },
+
+  async markAllAsRead(userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: все уведомления прочитаны', userId)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('notifications')
+      .update({ read: true })
+      .eq('user_id', userId)
+      .eq('read', false)
+
+    if (error) throw error
+  },
+
+  async delete(notificationId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: удалено уведомление', notificationId)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('notifications')
+      .delete()
+      .eq('id', notificationId)
+
+    if (error) throw error
+  },
+
+  // Subscribe to real-time notifications
+  subscribeToNotifications(userId: string, callback: (notification: any) => void) {
+    if (isDemoMode) {
+      console.log('✅ Demo: подписка на уведомления', userId)
+      return { unsubscribe: () => {} }
+    }
+
+    const channel = supabase!
+      .channel('notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          callback(payload.new)
+        }
+      )
+      .subscribe()
+
+    return {
+      unsubscribe: () => {
+        supabase!.removeChannel(channel)
+      },
+    }
+  },
+}
+
+// Messages service (Этап 1)
+export const messagesService = {
+  // Get all chats for a user
+  async getChats(userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение чатов', userId)
+      return []
+    }
+
+    const { data, error } = await supabase!
+      .from('chats')
+      .select(`
+        *,
+        user1:users!chats_user1_id_fkey(*),
+        user2:users!chats_user2_id_fkey(*),
+        request:help_requests(*),
+        offer:donor_offers(*)
+      `)
+      .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+      .order('last_message_at', { ascending: false })
+
+    if (error) throw error
+    return data
+  },
+
+  // Get or create a chat between two users
+  async getOrCreateChat(user1Id: string, user2Id: string, context?: { requestId?: string; offerId?: string }) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение/создание чата', user1Id, user2Id)
+      return { id: 'demo-chat-1', user1_id: user1Id, user2_id: user2Id }
+    }
+
+    // Sort user IDs to maintain the constraint user1_id < user2_id
+    const [userId1, userId2] = user1Id < user2Id ? [user1Id, user2Id] : [user2Id, user1Id]
+
+    // Try to find existing chat
+    const { data: existingChat, error: findError } = await supabase!
+      .from('chats')
+      .select('*')
+      .eq('user1_id', userId1)
+      .eq('user2_id', userId2)
+      .single()
+
+    if (existingChat) {
+      return existingChat
+    }
+
+    // Create new chat if not found
+    const { data: newChat, error: createError } = await supabase!
+      .from('chats')
+      .insert({
+        user1_id: userId1,
+        user2_id: userId2,
+        request_id: context?.requestId,
+        offer_id: context?.offerId,
+      })
+      .select()
+      .single()
+
+    if (createError) throw createError
+    return newChat
+  },
+
+  // Get messages for a chat
+  async getMessages(chatId: string, limit: number = 50) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение сообщений', chatId)
+      return []
+    }
+
+    const { data, error } = await supabase!
+      .from('messages')
+      .select(`
+        *,
+        sender:users!messages_sender_id_fkey(*)
+      `)
+      .eq('chat_id', chatId)
+      .order('created_at', { ascending: true })
+      .limit(limit)
+
+    if (error) throw error
+    return data
+  },
+
+  // Send a message
+  async sendMessage(chatId: string, senderId: string, content: string, attachments?: string[]) {
+    if (isDemoMode) {
+      console.log('✅ Demo: отправка сообщения', chatId, content)
+      return { id: 'demo-message-' + Date.now() }
+    }
+
+    const { data, error } = await supabase!
+      .from('messages')
+      .insert({
+        chat_id: chatId,
+        sender_id: senderId,
+        content,
+        attachments,
+      })
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  },
+
+  // Mark messages as read
+  async markMessagesAsRead(chatId: string, userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: сообщения прочитаны', chatId, userId)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('messages')
+      .update({ read: true })
+      .eq('chat_id', chatId)
+      .neq('sender_id', userId)
+      .eq('read', false)
+
+    if (error) throw error
+  },
+
+  // Get unread message count
+  async getUnreadCount(userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение количества непрочитанных сообщений', userId)
+      return 0
+    }
+
+    // Get all chats for this user
+    const { data: chats } = await supabase!
+      .from('chats')
+      .select('id')
+      .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+
+    if (!chats || chats.length === 0) return 0
+
+    const chatIds = chats.map(c => c.id)
+
+    // Count unread messages in these chats (not sent by this user)
+    const { count, error } = await supabase!
+      .from('messages')
+      .select('*', { count: 'exact', head: true })
+      .in('chat_id', chatIds)
+      .neq('sender_id', userId)
+      .eq('read', false)
+
+    if (error) throw error
+    return count || 0
+  },
+
+  // Subscribe to new messages in a chat
+  subscribeToMessages(chatId: string, callback: (message: any) => void) {
+    if (isDemoMode) {
+      console.log('✅ Demo: подписка на сообщения', chatId)
+      return { unsubscribe: () => {} }
+    }
+
+    const channel = supabase!
+      .channel(`messages:${chatId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `chat_id=eq.${chatId}`,
+        },
+        (payload) => {
+          callback(payload.new)
+        }
+      )
+      .subscribe()
+
+    return {
+      unsubscribe: () => {
+        supabase!.removeChannel(channel)
+      },
+    }
+  },
+
+  // Subscribe to chat updates (for chat list)
+  subscribeToChats(userId: string, callback: (chat: any) => void) {
+    if (isDemoMode) {
+      console.log('✅ Demo: подписка на обновления чатов', userId)
+      return { unsubscribe: () => {} }
+    }
+
+    const channel = supabase!
+      .channel('chats')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'chats',
+        },
+        (payload) => {
+          // Only notify if this user is part of the chat
+          const chat = payload.new as any
+          if (chat.user1_id === userId || chat.user2_id === userId) {
+            callback(chat)
+          }
+        }
+      )
+      .subscribe()
+
+    return {
+      unsubscribe: () => {
+        supabase!.removeChannel(channel)
+      },
+    }
+  },
 }

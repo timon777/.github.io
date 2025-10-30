@@ -263,6 +263,108 @@ export interface Database {
           resolved_at?: string | null
         }
       }
+      notifications: {
+        Row: {
+          id: string
+          user_id: string
+          type: 'response_received' | 'response_accepted' | 'response_rejected' | 'request_status_changed' | 'offer_status_changed' | 'new_message' | 'request_matched' | 'offer_matched' | 'verification_approved' | 'verification_rejected' | 'system'
+          title: string
+          message: string
+          link: string | null
+          read: boolean
+          request_id: string | null
+          offer_id: string | null
+          response_id: string | null
+          from_user_id: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          type: 'response_received' | 'response_accepted' | 'response_rejected' | 'request_status_changed' | 'offer_status_changed' | 'new_message' | 'request_matched' | 'offer_matched' | 'verification_approved' | 'verification_rejected' | 'system'
+          title: string
+          message: string
+          link?: string | null
+          read?: boolean
+          request_id?: string | null
+          offer_id?: string | null
+          response_id?: string | null
+          from_user_id?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          type?: 'response_received' | 'response_accepted' | 'response_rejected' | 'request_status_changed' | 'offer_status_changed' | 'new_message' | 'request_matched' | 'offer_matched' | 'verification_approved' | 'verification_rejected' | 'system'
+          title?: string
+          message?: string
+          link?: string | null
+          read?: boolean
+          request_id?: string | null
+          offer_id?: string | null
+          response_id?: string | null
+          from_user_id?: string | null
+          created_at?: string
+        }
+      }
+      chats: {
+        Row: {
+          id: string
+          user1_id: string
+          user2_id: string
+          request_id: string | null
+          offer_id: string | null
+          last_message_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user1_id: string
+          user2_id: string
+          request_id?: string | null
+          offer_id?: string | null
+          last_message_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user1_id?: string
+          user2_id?: string
+          request_id?: string | null
+          offer_id?: string | null
+          last_message_at?: string
+          created_at?: string
+        }
+      }
+      messages: {
+        Row: {
+          id: string
+          chat_id: string
+          sender_id: string
+          content: string
+          read: boolean
+          attachments: string[] | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          chat_id: string
+          sender_id: string
+          content: string
+          read?: boolean
+          attachments?: string[] | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          chat_id?: string
+          sender_id?: string
+          content?: string
+          read?: boolean
+          attachments?: string[] | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
