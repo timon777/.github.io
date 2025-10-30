@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { requestsService, donorOffersService } from '../services/supabase'
+import { requestsService, donorOffersService, messagesService } from '../services/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useRoleAccess } from '../hooks/useRoleAccess'
 import VerifiedBadge from '../components/VerifiedBadge'
@@ -88,6 +88,25 @@ export default function RequestDetailPage() {
       navigate('/requests')
     } catch (error) {
       console.error('Ошибка при удалении:', error)
+      alert(t('common.error'))
+    }
+  }
+
+  const handleStartChat = async () => {
+    if (!user || !request) return
+
+    try {
+      // Create or get existing chat
+      await messagesService.getOrCreateChat(
+        user.id,
+        request.beneficiary_id,
+        { requestId: request.id }
+      )
+
+      // Navigate to messages page
+      navigate('/messages')
+    } catch (error) {
+      console.error('Error starting chat:', error)
       alert(t('common.error'))
     }
   }
@@ -216,23 +235,43 @@ export default function RequestDetailPage() {
             {/* Beneficiary Info */}
             <div className="bg-gray-50 rounded-lg p-6 mb-8">
               <h2 className="text-xl font-semibold mb-4">{t('requests.beneficiary')}</h2>
-              <div className="flex items-start">
-                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-2xl font-bold text-primary-600">
-                    {request.beneficiary?.first_name?.[0] || 'B'}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center mb-2">
-                    <h3 className="text-lg font-semibold mr-2">
-                      {request.beneficiary?.first_name} {request.beneficiary?.last_name}
-                    </h3>
-                    {request.beneficiary?.verified && <VerifiedBadge verified={true} />}
+              <div className="flex items-start justify-between">
+                <div className="flex items-start flex-1">
+                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mr-4">
+                    <span className="text-2xl font-bold text-primary-600">
+                      {request.beneficiary?.first_name?.[0] || 'B'}
+                    </span>
                   </div>
-                  <p className="text-gray-600">
-                    {t('requests.beneficiary')}
-                  </p>
+                  <div className="flex-1">
+                    <div className="flex items-center mb-2">
+                      <h3 className="text-lg font-semibold mr-2">
+                        {request.beneficiary?.first_name} {request.beneficiary?.last_name}
+                      </h3>
+                      {request.beneficiary?.verified && <VerifiedBadge verified={true} />}
+                    </div>
+                    <p className="text-gray-600">
+                      {t('requests.beneficiary')}
+                    </p>
+                  </div>
                 </div>
+
+                {/* Start Chat Button */}
+                {!isOwner && user && (
+                  <button
+                    onClick={handleStartChat}
+                    className="btn-secondary flex items-center space-x-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                    <span>{t('messages.startChat')}</span>
+                  </button>
+                )}
               </div>
             </div>
 
