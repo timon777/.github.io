@@ -6,6 +6,7 @@ import { HelpCategory, OfferType } from '../types'
 import { useLocationStore, CITIES } from '../stores/locationStore'
 import { useAuthStore } from '../stores/authStore'
 import { donorOffersService, locationsService } from '../services/supabase'
+import ImageUpload from '../components/ImageUpload'
 
 interface OfferForm {
   title: string
@@ -28,6 +29,7 @@ export default function CreateOfferPage() {
   const { user } = useAuthStore()
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [images, setImages] = useState<string[]>([])
 
   const {
     register,
@@ -83,6 +85,7 @@ export default function CreateOfferPage() {
         contact_email: data.contact_email || user.email || null,
         donor_id: user.id,
         location_id: location.id,
+        images: images.length > 0 ? images : null,
         status: 'active',
         expires_at: expiresAt.toISOString()
       })
@@ -299,6 +302,21 @@ export default function CreateOfferPage() {
               <option value="60">60 дней</option>
               <option value="90">90 дней</option>
             </select>
+          </div>
+
+          {/* Фотографии */}
+          <div className="mb-6 border-t pt-6">
+            <h3 className="text-lg font-semibold mb-4">
+              Фотографии ({t('common.optional')})
+            </h3>
+            <ImageUpload
+              folder="offers"
+              maxFiles={5}
+              maxSizeMB={5}
+              onUpload={setImages}
+              existingImages={images}
+              disabled={isLoading}
+            />
           </div>
 
           {/* Кнопки */}
