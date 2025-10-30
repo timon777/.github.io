@@ -361,5 +361,20 @@
     "matchScore": "Сәйкестік",
     "browseMoreOffers": "Көбірек ұсыныстарды қарау",
     "browseMoreRequests": "Көбірек өтініштерді қарау"
+  },
+  "filters": {
+    "advancedFilters": "Кеңейтілген сүзгілер",
+    "active": "Белсенді",
+    "searchPlaceholder": "Атауы немесе сипаттамасы бойынша өтініштерді іздеу...",
+    "searchPlaceholderOffers": "Атауы немесе сипаттамасы бойынша ұсыныстарды іздеу...",
+    "dateFrom": "Күні бастап",
+    "dateTo": "Күні дейін",
+    "sortBy": "Сұрыптау",
+    "dateNewest": "Жаңалары бірінші",
+    "dateOldest": "Ескілері бірінші",
+    "priorityHighest": "Жоғары басымдылық",
+    "priorityLowest": "Төмен басымдылық",
+    "distanceNearest": "Жақын",
+    "clearAll": "Барлығын тазалау"
   }
 }

@@ -361,5 +361,20 @@
     "matchScore": "Совпадение",
     "browseMoreOffers": "Смотреть больше предложений",
     "browseMoreRequests": "Смотреть больше заявок"
+  },
+  "filters": {
+    "advancedFilters": "Продвинутые фильтры",
+    "active": "Активно",
+    "searchPlaceholder": "Поиск по названию или описанию заявок...",
+    "searchPlaceholderOffers": "Поиск по названию или описанию предложений...",
+    "dateFrom": "Дата от",
+    "dateTo": "Дата до",
+    "sortBy": "Сортировка",
+    "dateNewest": "Новые сначала",
+    "dateOldest": "Старые сначала",
+    "priorityHighest": "Высокий приоритет",
+    "priorityLowest": "Низкий приоритет",
+    "distanceNearest": "Ближайшие",
+    "clearAll": "Очистить все"
   }
 }

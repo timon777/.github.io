@@ -361,5 +361,20 @@
     "matchScore": "Match",
     "browseMoreOffers": "Browse More Offers",
     "browseMoreRequests": "Browse More Requests"
+  },
+  "filters": {
+    "advancedFilters": "Advanced Filters",
+    "active": "Active",
+    "searchPlaceholder": "Search requests by title or description...",
+    "searchPlaceholderOffers": "Search offers by title or description...",
+    "dateFrom": "Date from",
+    "dateTo": "Date to",
+    "sortBy": "Sort by",
+    "dateNewest": "Newest first",
+    "dateOldest": "Oldest first",
+    "priorityHighest": "Highest priority",
+    "priorityLowest": "Lowest priority",
+    "distanceNearest": "Nearest",
+    "clearAll": "Clear all"
   }
 }

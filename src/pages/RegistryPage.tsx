@@ -5,14 +5,21 @@ import { useTranslation } from 'react-i18next'
 import { donorOffersService } from '../services/supabase'
 import { mockDonorOffers } from '../services/mockData'
 import { DonorOffer, OfferType, OfferStatus, HelpCategory } from '../types'
+import { filterOffers, sortOffers, type FilterOptions } from '../utils/filterUtils'
 import VerifiedBadge from '../components/VerifiedBadge'
 import { useLocationStore } from '../stores/locationStore'
+import SearchBar from '../components/SearchBar'
+import AdvancedFilters from '../components/AdvancedFilters'
 
 type ViewMode = 'grid' | 'table'
 
 export default function RegistryPage() {
   const { t } = useTranslation()
   const { selectedCity } = useLocationStore()
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filters, setFilters] = useState<FilterOptions>({
+    sortBy: 'date_desc',
+  })
   const [selectedType, setSelectedType] = useState<OfferType | 'all'>('all')
   const [selectedCategory, setSelectedCategory] = useState<HelpCategory | 'all'>('all')
   const [selectedStatus, setSelectedStatus] = useState<OfferStatus | 'all'>('all')
@@ -45,15 +52,28 @@ export default function RegistryPage() {
     },
   })
 
-  // Фильтрация по городу
+  // Фильтрация, поиск и сортировка
   const offers = useMemo(() => {
     if (!allOffers) return []
-    if (!selectedCity) return allOffers
 
-    return allOffers.filter(offer =>
-      offer.location.city === selectedCity.name
-    )
-  }, [allOffers, selectedCity])
+    // Фильтруем по городу
+    let filtered = allOffers
+    if (selectedCity) {
+      filtered = filtered.filter(offer =>
+        offer.location.city === selectedCity.name
+      )
+    }
+
+    // Применяем поиск и продвинутые фильтры
+    filtered = filterOffers(filtered, searchQuery, filters)
+
+    // Сортировка
+    if (filters.sortBy) {
+      filtered = sortOffers(filtered, filters.sortBy)
+    }
+
+    return filtered
+  }, [allOffers, selectedCity, searchQuery, filters])
 
   // Функция переключения вида
   const handleViewModeChange = (mode: ViewMode) => {
@@ -136,60 +156,24 @@ export default function RegistryPage() {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('registry.type')}
-              </label>
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value as any)}
-                className="input-field"
-              >
-                <option value="all">{t('registry.allTypes')}</option>
-                <option value="goods">{t('registry.goods')}</option>
-                <option value="service">{t('registry.service')}</option>
-              </select>
-            </div>
+        {/* Search Bar */}
+        <div className="mb-6">
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder={t('filters.searchPlaceholderOffers')}
+          />
+        </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('registry.category')}
-              </label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value as any)}
-                className="input-field"
-              >
-                <option value="all">{t('categories.all')}</option>
-                <option value="food">{t('categories.food')}</option>
-                <option value="clothing">{t('categories.clothing')}</option>
-                <option value="medicine">{t('categories.medicine')}</option>
-                <option value="household">{t('categories.household')}</option>
-                <option value="transport">{t('categories.transport')}</option>
-                <option value="animal_care">{t('categories.animal_care')}</option>
-                <option value="legal_service">{t('categories.legal_service')}</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('registry.status')}
-              </label>
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value as any)}
-                className="input-field"
-              >
-                <option value="all">{t('registry.allStatuses')}</option>
-                <option value="active">{t('registry.statusActive')}</option>
-                <option value="reserved">{t('registry.statusReserved')}</option>
-                <option value="completed">{t('registry.statusCompleted')}</option>
-              </select>
-            </div>
-          </div>
+        {/* Advanced Filters */}
+        <div className="mb-8">
+          <AdvancedFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            showPriorityFilter={false}
+            showTypeFilter={true}
+            showDistanceSort={false}
+          />
         </div>
 
         {/* Results count */}
