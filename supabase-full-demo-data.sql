@@ -338,7 +338,7 @@ INSERT INTO public.responses (
 ) VALUES
 -- Отклик донора 1 на продуктовую помощь
 (
-  '8d9e7780-8536-51ef-a55c-f18gd2g01bf8',
+  '8d9e7780-8536-51ef-a55c-f18ed2e01bf8',
   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
   'USER_UUID_DONOR1',
   'Могу помочь с продуктами! У меня есть крупы, макароны и консервы. Когда можем встретиться?',
@@ -348,7 +348,7 @@ INSERT INTO public.responses (
 
 -- Отклик донора 2 на ремонт крыши
 (
-  '8d9e7780-8536-51ef-a55c-f18gd2g01bf9',
+  '8d9e7780-8536-51ef-a55c-f18ed2e01bf9',
   '6ba7b813-9dad-11d1-80b4-00c04fd430c8',
   'USER_UUID_DONOR2',
   'У меня остались стройматериалы после ремонта. Могу помочь и с работой в выходные.',
@@ -364,15 +364,15 @@ INSERT INTO public.responses (
 /*
 INSERT INTO public.offered_items (response_id, name, quantity, unit) VALUES
 -- Для отклика на продукты
-('8d9e7780-8536-51ef-a55c-f18gd2g01bf8', 'Гречневая крупа', 3, 'кг'),
-('8d9e7780-8536-51ef-a55c-f18gd2g01bf8', 'Рис', 2, 'кг'),
-('8d9e7780-8536-51ef-a55c-f18gd2g01bf8', 'Макароны', 2, 'кг'),
-('8d9e7780-8536-51ef-a55c-f18gd2g01bf8', 'Консервы мясные', 5, 'банка'),
+('8d9e7780-8536-51ef-a55c-f18ed2e01bf8', 'Гречневая крупа', 3, 'кг'),
+('8d9e7780-8536-51ef-a55c-f18ed2e01bf8', 'Рис', 2, 'кг'),
+('8d9e7780-8536-51ef-a55c-f18ed2e01bf8', 'Макароны', 2, 'кг'),
+('8d9e7780-8536-51ef-a55c-f18ed2e01bf8', 'Консервы мясные', 5, 'банка'),
 
 -- Для отклика на ремонт крыши
-('8d9e7780-8536-51ef-a55c-f18gd2g01bf9', 'Шифер', 10, 'лист'),
-('8d9e7780-8536-51ef-a55c-f18gd2g01bf9', 'Рубероид', 1, 'рулон'),
-('8d9e7780-8536-51ef-a55c-f18gd2g01bf9', 'Гвозди', 1, 'кг');
+('8d9e7780-8536-51ef-a55c-f18ed2e01bf9', 'Шифер', 10, 'лист'),
+('8d9e7780-8536-51ef-a55c-f18ed2e01bf9', 'Рубероид', 1, 'рулон'),
+('8d9e7780-8536-51ef-a55c-f18ed2e01bf9', 'Гвозди', 1, 'кг');
 */
 
 -- ============================================
@@ -386,7 +386,7 @@ INSERT INTO public.shelters (
   manager_id, created_at
 ) VALUES
 (
-  '9e0e8891-9647-62fg-b66d-g29he3h12cg9',
+  '9e0e8891-9647-62de-b66d-e29ae3a12ce9',
   'Приют для бездомных животных "Надежда"',
   'Приют для собак и кошек. Принимаем животных, помогаем с лечением и поиском хозяев. Всегда нужны корма и медикаменты.',
   'animal',
@@ -399,7 +399,7 @@ INSERT INTO public.shelters (
   NOW() - INTERVAL '30 days'
 ),
 (
-  '9e0e8891-9647-62fg-b66d-g29he3h12ch0',
+  '9e0e8891-9647-62de-b66d-e29ae3a12ca0',
   'Центр помощи бездомным "Теплый дом"',
   'Социальный центр для людей без определенного места жительства. Предоставляем ночлег, питание, помощь в социализации.',
   'human',
@@ -420,14 +420,14 @@ INSERT INTO public.shelters (
 /*
 INSERT INTO public.user_stats (
   user_id, requests_created, requests_completed,
-  donations_made, volunteer_hours, rating
+  donations_made, volunteer_hours
 ) VALUES
-('USER_UUID_BENEFICIARY1', 5, 2, 0, 0, 0.0),
-('USER_UUID_BENEFICIARY2', 8, 3, 0, 0, 0.0),
-('USER_UUID_DONOR1', 0, 0, 12, 0, 4.8),
-('USER_UUID_DONOR2', 0, 0, 8, 0, 4.9),
-('USER_UUID_VOLUNTEER', 0, 0, 5, 45, 4.7),
-('USER_UUID_SHELTER', 15, 10, 0, 120, 4.6);
+('USER_UUID_BENEFICIARY1', 5, 2, 0, 0),
+('USER_UUID_BENEFICIARY2', 8, 3, 0, 0),
+('USER_UUID_DONOR1', 0, 0, 12, 0),
+('USER_UUID_DONOR2', 0, 0, 8, 0),
+('USER_UUID_VOLUNTEER', 0, 0, 5, 45),
+('USER_UUID_SHELTER', 15, 10, 0, 120);
 */
 
 -- ============================================
@@ -454,13 +454,13 @@ INSERT INTO public.emergencies (
   active, priority_boost, created_at
 ) VALUES
 (
-  'af1f9992-a758-73gh-c77e-h30if4i23di1',
+  'af1f9992-a758-73de-c77e-a30bf4b23db1',
   'Наводнение в Петропавловске',
   'Паводок затопил жилые районы. Срочно требуется помощь пострадавшим семьям.',
   'natural_disaster',
   '550e8400-e29b-41d4-a716-446655440011',
   true,
-  2.0,
+  2,
   NOW() - INTERVAL '2 days'
 );
 */
@@ -574,5 +574,6 @@ FROM public.responses r
 JOIN public.users u ON r.donor_id = u.id
 LEFT JOIN public.offered_items oi ON r.id = oi.response_id
 WHERE r.request_id = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
-GROUP BY r.id, r.message, r.status, u.first_name, u.last_name, u.rating;
+GROUP BY r.id, r.message, r.status, u.first_name, u.last_name, u.rating
+ORDER BY r.created_at DESC;
 */
