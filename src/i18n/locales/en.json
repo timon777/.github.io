@@ -18,7 +18,8 @@
     "error": "Error",
     "success": "Success",
     "verified": "Verified",
-    "optional": "optional"
+    "optional": "optional",
+    "settings": "Settings"
   },
   "nav": {
     "home": "Home",
@@ -27,7 +28,8 @@
     "shelters": "Shelters",
     "volunteers": "Volunteers",
     "map": "Map",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "profile": "Profile"
   },
   "home": {
     "title": "Social Registry of Targeted Assistance",
