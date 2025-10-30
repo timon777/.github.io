@@ -105,6 +105,10 @@ export default function RegistryPage() {
     }
   }
 
+  const getStatusLabel = (status: OfferStatus) => {
+    return t(`registry.${status}`)
+  }
+
   const getTypeColor = (type: OfferType) => {
     return type === 'goods' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
   }
@@ -200,11 +204,7 @@ export default function RegistryPage() {
                     {offer.type === 'goods' ? t('registry.goods') : t('registry.service')}
                   </span>
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(offer.status)}`}>
-                    {offer.status === 'active'
-                      ? t('registry.statusActive')
-                      : offer.status === 'reserved'
-                      ? t('registry.statusReserved')
-                      : t('registry.statusCompleted')}
+                    {getStatusLabel(offer.status)}
                   </span>
                 </div>
 
@@ -326,11 +326,7 @@ export default function RegistryPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(offer.status)}`}>
-                          {offer.status === 'active'
-                            ? t('registry.statusActive')
-                            : offer.status === 'reserved'
-                            ? t('registry.statusReserved')
-                            : t('registry.statusCompleted')}
+                          {getStatusLabel(offer.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">

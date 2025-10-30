@@ -113,16 +113,22 @@ export default function RequestsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-yellow-100 text-yellow-800'
       case 'approved':
-        return 'bg-green-100 text-green-800'
+        return 'bg-blue-100 text-blue-800'
       case 'in_progress':
         return 'bg-purple-100 text-purple-800'
       case 'completed':
-        return 'bg-gray-100 text-gray-800'
-      default:
+        return 'bg-green-100 text-green-800'
+      case 'rejected':
         return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
+  }
+
+  const getStatusLabel = (status: string) => {
+    return t(`status.${status}`)
   }
 
   return (
@@ -212,7 +218,7 @@ export default function RequestsPage() {
                       {t(`requests.${request.priority}`)}
                     </span>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(request.status)}`}>
-                      {request.status === 'open' ? t('requests.open') : request.status === 'in_progress' ? t('requests.inProgress') : t('requests.closed')}
+                      {getStatusLabel(request.status)}
                     </span>
                   </div>
 
@@ -311,7 +317,7 @@ export default function RequestsPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(request.status)}`}>
-                          {request.status === 'open' ? t('requests.open') : request.status === 'in_progress' ? t('requests.inProgress') : t('requests.closed')}
+                          {getStatusLabel(request.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
