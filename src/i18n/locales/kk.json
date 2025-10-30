@@ -395,5 +395,15 @@
     "startChat": "Чат бастау",
     "chats": "Чаттар",
     "noChats": "Белсенді чаттар жоқ"
+  },
+  "imageUpload": {
+    "addImages": "Фото қосу",
+    "uploading": "Жүктелуде...",
+    "hint": "{{max}}-дан {{current}} фото (әрқайсысы макс. {{size}}MB)",
+    "errorNotImage": "Файл сурет болуы керек",
+    "errorTooLarge": "Файл тым үлкен (макс. {{max}}MB)",
+    "errorMaxFiles": "Максимум {{max}} фото",
+    "errorUpload": "Суретті жүктеу қатесі",
+    "helpText": "Қолдау көрсетілетін форматтар: JPG, PNG, WebP, GIF"
   }
 }

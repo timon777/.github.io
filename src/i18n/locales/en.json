@@ -395,5 +395,15 @@
     "startChat": "Start chat",
     "chats": "Chats",
     "noChats": "No active chats"
+  },
+  "imageUpload": {
+    "addImages": "Add Photos",
+    "uploading": "Uploading...",
+    "hint": "{{current}} of {{max}} photos (max {{size}}MB each)",
+    "errorNotImage": "File must be an image",
+    "errorTooLarge": "File too large (max {{max}}MB)",
+    "errorMaxFiles": "Maximum {{max}} photos",
+    "errorUpload": "Error uploading image",
+    "helpText": "Supported formats: JPG, PNG, WebP, GIF"
   }
 }

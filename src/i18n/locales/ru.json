@@ -395,5 +395,15 @@
     "startChat": "Начать чат",
     "chats": "Чаты",
     "noChats": "Нет активных чатов"
+  },
+  "imageUpload": {
+    "addImages": "Добавить фото",
+    "uploading": "Загрузка...",
+    "hint": "{{current}} из {{max}} фото (макс. {{size}}MB каждое)",
+    "errorNotImage": "Файл должен быть изображением",
+    "errorTooLarge": "Файл слишком большой (макс. {{max}}MB)",
+    "errorMaxFiles": "Максимум {{max}} фото",
+    "errorUpload": "Ошибка при загрузке изображения",
+    "helpText": "Поддерживаются форматы: JPG, PNG, WebP, GIF"
   }
 }
