@@ -1104,3 +1104,336 @@ export const messagesService = {
     }
   },
 }
+
+// Verification service (Этап 2)
+export const verificationService = {
+  // Get user's verification requests
+  async getMyRequests(userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение запросов на верификацию', userId)
+      return []
+    }
+
+    const { data, error } = await supabase!
+      .from('verification_requests')
+      .select(`
+        *,
+        reviewer:users!verification_requests_reviewed_by_fkey(*)
+      `)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return data
+  },
+
+  // Get all verification requests (admin)
+  async getAll(filters?: { status?: string; type?: string }) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение всех запросов на верификацию', filters)
+      return []
+    }
+
+    let query = supabase!
+      .from('verification_requests')
+      .select(`
+        *,
+        user:users!verification_requests_user_id_fkey(*),
+        reviewer:users!verification_requests_reviewed_by_fkey(*)
+      `)
+      .order('created_at', { ascending: false })
+
+    if (filters?.status) {
+      query = query.eq('status', filters.status)
+    }
+
+    if (filters?.type) {
+      query = query.eq('type', filters.type)
+    }
+
+    const { data, error} = await query
+    if (error) throw error
+    return data
+  },
+
+  // Create verification request
+  async create(requestData: any) {
+    if (isDemoMode) {
+      console.log('✅ Demo: создание запроса на верификацию', requestData)
+      return { id: 'demo-verification-' + Date.now() }
+    }
+
+    const { data, error } = await supabase!
+      .from('verification_requests')
+      .insert(requestData)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  },
+
+  // Update verification request (admin)
+  async updateStatus(id: string, status: string, reviewerId: string, rejectionReason?: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: обновление статуса верификации', id, status)
+      return
+    }
+
+    const updateData: any = {
+      status,
+      reviewed_by: reviewerId,
+      reviewed_at: new Date().toISOString(),
+    }
+
+    if (rejectionReason) {
+      updateData.rejection_reason = rejectionReason
+    }
+
+    if (status === 'approved') {
+      // Верификация действительна 1 год
+      const verifiedUntil = new Date()
+      verifiedUntil.setFullYear(verifiedUntil.getFullYear() + 1)
+      updateData.verified_until = verifiedUntil.toISOString()
+    }
+
+    const { error } = await supabase!
+      .from('verification_requests')
+      .update(updateData)
+      .eq('id', id)
+
+    if (error) throw error
+  },
+}
+
+// Reviews/Ratings service (Этап 2)
+export const reviewsService = {
+  // Get reviews for a user
+  async getForUser(userId: string, visible: boolean = true) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение отзывов пользователя', userId)
+      return []
+    }
+
+    let query = supabase!
+      .from('reviews')
+      .select(`
+        *,
+        reviewer:users!reviews_reviewer_id_fkey(*),
+        request:help_requests(*),
+        offer:donor_offers(*)
+      `)
+      .eq('reviewee_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (visible) {
+      query = query.eq('is_visible', true)
+    }
+
+    const { data, error } = await query
+    if (error) throw error
+    return data
+  },
+
+  // Get reviews by user
+  async getByUser(userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение отзывов от пользователя', userId)
+      return []
+    }
+
+    const { data, error } = await supabase!
+      .from('reviews')
+      .select(`
+        *,
+        reviewee:users!reviews_reviewee_id_fkey(*),
+        request:help_requests(*),
+        offer:donor_offers(*)
+      `)
+      .eq('reviewer_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return data
+  },
+
+  // Create review
+  async create(reviewData: {
+    reviewer_id: string
+    reviewee_id: string
+    rating: number
+    comment?: string
+    communication_rating?: number
+    reliability_rating?: number
+    quality_rating?: number
+    request_id?: string
+    offer_id?: string
+    response_id?: string
+  }) {
+    if (isDemoMode) {
+      console.log('✅ Demo: создание отзыва', reviewData)
+      return { id: 'demo-review-' + Date.now() }
+    }
+
+    const { data, error } = await supabase!
+      .from('reviews')
+      .insert(reviewData)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  },
+
+  // Update review
+  async update(id: string, updates: any) {
+    if (isDemoMode) {
+      console.log('✅ Demo: обновление отзыва', id, updates)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('reviews')
+      .update(updates)
+      .eq('id', id)
+
+    if (error) throw error
+  },
+
+  // Delete review
+  async delete(id: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: удаление отзыва', id)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('reviews')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+  },
+
+  // Moderate review (admin)
+  async moderate(id: string, isVisible: boolean, moderatorId: string, reason?: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: модерация отзыва', id, isVisible)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('reviews')
+      .update({
+        is_visible: isVisible,
+        moderated_by: moderatorId,
+        moderation_reason: reason,
+      })
+      .eq('id', id)
+
+    if (error) throw error
+  },
+
+  // Get average rating for user
+  async getAverageRating(userId: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение среднего рейтинга', userId)
+      return { avg: 4.5, count: 10 }
+    }
+
+    const { data, error } = await supabase!
+      .from('reviews')
+      .select('rating')
+      .eq('reviewee_id', userId)
+      .eq('is_visible', true)
+
+    if (error) throw error
+
+    if (!data || data.length === 0) {
+      return { avg: 0, count: 0 }
+    }
+
+    const sum = data.reduce((acc, review) => acc + review.rating, 0)
+    const avg = sum / data.length
+
+    return {
+      avg: Math.round(avg * 10) / 10, // Round to 1 decimal
+      count: data.length,
+    }
+  },
+}
+
+// Moderation service (Этап 2)
+export const moderationService = {
+  // Create moderation flag
+  async createFlag(flagData: {
+    content_type: string
+    content_id: string
+    reporter_id: string
+    reason: string
+    description?: string
+  }) {
+    if (isDemoMode) {
+      console.log('✅ Demo: создание жалобы', flagData)
+      return { id: 'demo-flag-' + Date.now() }
+    }
+
+    const { data, error } = await supabase!
+      .from('moderation_flags')
+      .insert(flagData)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  },
+
+  // Get all flags (admin)
+  async getAll(filters?: { status?: string; content_type?: string }) {
+    if (isDemoMode) {
+      console.log('✅ Demo: получение всех жалоб', filters)
+      return []
+    }
+
+    let query = supabase!
+      .from('moderation_flags')
+      .select(`
+        *,
+        reporter:users!moderation_flags_reporter_id_fkey(*),
+        reviewer:users!moderation_flags_reviewed_by_fkey(*)
+      `)
+      .order('created_at', { ascending: false })
+
+    if (filters?.status) {
+      query = query.eq('status', filters.status)
+    }
+
+    if (filters?.content_type) {
+      query = query.eq('content_type', filters.content_type)
+    }
+
+    const { data, error } = await query
+    if (error) throw error
+    return data
+  },
+
+  // Update flag status (admin)
+  async updateStatus(id: string, status: string, reviewerId: string, actionTaken?: string) {
+    if (isDemoMode) {
+      console.log('✅ Demo: обновление статуса жалобы', id, status)
+      return
+    }
+
+    const { error } = await supabase!
+      .from('moderation_flags')
+      .update({
+        status,
+        reviewed_by: reviewerId,
+        reviewed_at: new Date().toISOString(),
+        action_taken: actionTaken,
+      })
+      .eq('id', id)
+
+    if (error) throw error
+  },
+}

@@ -233,3 +233,99 @@ export interface Message {
   attachments?: string[]
   created_at: string
 }
+
+// Verification types (Этап 2)
+export type VerificationType = 'individual' | 'organization' | 'business' | 'government'
+export type VerificationStatus = 'pending' | 'under_review' | 'approved' | 'rejected' | 'expired'
+
+// Verification Request
+export interface VerificationRequest {
+  id: string
+  user_id: string
+  type: VerificationType
+  status: VerificationStatus
+
+  // Personal/Organization info
+  full_name?: string
+  organization_name?: string
+  registration_number?: string
+  phone: string
+  email: string
+  address?: string
+
+  // Documents
+  documents?: string[]
+
+  // Additional info
+  description?: string
+  website?: string
+
+  // Review
+  reviewed_by?: string
+  reviewer?: User
+  reviewed_at?: string
+  rejection_reason?: string
+
+  // Expiration
+  verified_until?: string
+
+  created_at: string
+  updated_at: string
+}
+
+// Review/Rating (Этап 2)
+export interface Review {
+  id: string
+  reviewer_id: string
+  reviewee_id: string
+  reviewer?: User
+  reviewee?: User
+
+  // Context
+  request_id?: string
+  offer_id?: string
+  response_id?: string
+  request?: HelpRequest
+  offer?: DonorOffer
+
+  // Rating
+  rating: number // 1-5
+  comment?: string
+
+  // Detailed ratings
+  communication_rating?: number
+  reliability_rating?: number
+  quality_rating?: number
+
+  // Moderation
+  is_visible: boolean
+  moderated_by?: string
+  moderator?: User
+  moderation_reason?: string
+
+  created_at: string
+  updated_at: string
+}
+
+// Moderation (Этап 2)
+export type ModerationContentType = 'help_request' | 'donor_offer' | 'review' | 'user_profile' | 'message'
+export type ModerationReason = 'spam' | 'inappropriate' | 'fraud' | 'harassment' | 'misinformation' | 'other'
+
+export interface ModerationFlag {
+  id: string
+  content_type: ModerationContentType
+  content_id: string
+
+  reporter_id?: string
+  reporter?: User
+  reason: ModerationReason
+  description?: string
+
+  status: VerificationStatus
+  reviewed_by?: string
+  reviewer?: User
+  reviewed_at?: string
+  action_taken?: string
+
+  created_at: string
+}
