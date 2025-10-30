@@ -394,7 +394,15 @@
     "typePlaceholder": "Хабарлама жазыңыз...",
     "startChat": "Чат бастау",
     "chats": "Чаттар",
-    "noChats": "Белсенді чаттар жоқ"
+    "noChats": "Белсенді чаттар жоқ",
+    "selectChat": "Хабарласуды бастау үшін чатты таңдаңыз",
+    "newMessages": "Жаңа хабарламалар",
+    "loginRequired": "Авторизация қажет",
+    "loginRequiredDesc": "Хабарламаларыңызды көру үшін жүйеге кіріңіз",
+    "errorSending": "Хабарлама жіберу қатесі",
+    "sendFirstMessage": "Бірінші хабарламаны жіберіңіз",
+    "today": "Бүгін",
+    "yesterday": "Кеше"
   },
   "imageUpload": {
     "addImages": "Фото қосу",

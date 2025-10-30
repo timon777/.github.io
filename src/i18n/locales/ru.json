@@ -394,7 +394,15 @@
     "typePlaceholder": "Напишите сообщение...",
     "startChat": "Начать чат",
     "chats": "Чаты",
-    "noChats": "Нет активных чатов"
+    "noChats": "Нет активных чатов",
+    "selectChat": "Выберите чат для начала общения",
+    "newMessages": "Новые сообщения",
+    "loginRequired": "Требуется авторизация",
+    "loginRequiredDesc": "Войдите, чтобы просмотреть свои сообщения",
+    "errorSending": "Ошибка при отправке сообщения",
+    "sendFirstMessage": "Отправьте первое сообщение",
+    "today": "Сегодня",
+    "yesterday": "Вчера"
   },
   "imageUpload": {
     "addImages": "Добавить фото",

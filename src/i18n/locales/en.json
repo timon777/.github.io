@@ -394,7 +394,15 @@
     "typePlaceholder": "Type a message...",
     "startChat": "Start chat",
     "chats": "Chats",
-    "noChats": "No active chats"
+    "noChats": "No active chats",
+    "selectChat": "Select a chat to start messaging",
+    "newMessages": "New messages",
+    "loginRequired": "Login Required",
+    "loginRequiredDesc": "Please login to view your messages",
+    "errorSending": "Error sending message",
+    "sendFirstMessage": "Send the first message",
+    "today": "Today",
+    "yesterday": "Yesterday"
   },
   "imageUpload": {
     "addImages": "Add Photos",
