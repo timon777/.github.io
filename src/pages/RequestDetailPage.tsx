@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { requestsService } from '../services/supabase'
+import { requestsService, donorOffersService } from '../services/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useRoleAccess } from '../hooks/useRoleAccess'
 import VerifiedBadge from '../components/VerifiedBadge'
 import ResponseForm from '../components/ResponseForm'
 import ResponseList from '../components/ResponseList'
+import { findMatchingOffers, getMatchQuality } from '../utils/matchingSystem'
 
 export default function RequestDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -26,6 +27,18 @@ export default function RequestDetailPage() {
     },
     enabled: !!id,
   })
+
+  // Fetch all donor offers for matching
+  const { data: allOffers = [] } = useQuery({
+    queryKey: ['donorOffers'],
+    queryFn: () => donorOffersService.getAll(),
+  })
+
+  // Calculate matching offers
+  const matchingOffers = useMemo(() => {
+    if (!request || !allOffers || allOffers.length === 0) return []
+    return findMatchingOffers(request, allOffers, 5)
+  }, [request, allOffers])
 
   const isOwner = user && request && user.id === request.beneficiary_id
 
@@ -270,6 +283,100 @@ export default function RequestDetailPage() {
             </div>
           )}
         </div>
+
+        {/* Matching Offers Section */}
+        {matchingOffers.length > 0 && (
+          <div className="mt-8 bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">
+                {t('matching.matchingOffers')} 🎁
+              </h2>
+              <Link
+                to="/registry"
+                className="text-primary-600 hover:text-primary-700 text-sm font-semibold"
+              >
+                {t('matching.viewAllOffers')} →
+              </Link>
+            </div>
+
+            <p className="text-gray-600 mb-6">
+              {t('matching.matchingOffersDescription')}
+            </p>
+
+            <div className="space-y-4">
+              {matchingOffers.map(({ offer, score, reasons }) => {
+                const quality = getMatchQuality(score)
+                return (
+                  <Link
+                    key={offer.id}
+                    to={`/offers/${offer.id}`}
+                    className="block border border-gray-200 rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                          {offer.title}
+                        </h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${quality.bgColor} ${quality.color}`}>
+                            {quality.label}
+                          </span>
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                            {t(`categories.${offer.category}`)}
+                          </span>
+                          <span className="text-sm text-gray-600 flex items-center">
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            </svg>
+                            {offer.location.city}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-right ml-4">
+                        <div className="text-2xl font-bold text-primary-600">
+                          {score}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {t('matching.matchScore')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-700 text-sm mb-3 line-clamp-2">
+                      {offer.description}
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-2">
+                          <span className="text-xs font-semibold text-primary-600">
+                            {offer.donor?.first_name?.[0] || 'D'}
+                          </span>
+                        </div>
+                        <span>
+                          {offer.donor?.first_name} {offer.donor?.last_name}
+                        </span>
+                      </div>
+
+                      <div className="text-sm text-gray-500">
+                        {reasons.slice(0, 2).join(' • ')}
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+
+            <div className="mt-6 text-center">
+              <Link
+                to="/registry"
+                className="btn-primary inline-block"
+              >
+                {t('matching.browseMoreOffers')}
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Back Button */}
         <div className="mt-6">

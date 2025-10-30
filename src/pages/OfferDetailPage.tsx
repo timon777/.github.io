@@ -1,10 +1,13 @@
+import { useMemo } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { donorOffersService } from '../services/supabase'
+import { donorOffersService, requestsService } from '../services/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useRoleAccess } from '../hooks/useRoleAccess'
 import VerifiedBadge from '../components/VerifiedBadge'
+import VulnerableCategoryBadges from '../components/VulnerableCategoryBadges'
+import { findMatchingRequests, getMatchQuality } from '../utils/matchingSystem'
 
 export default function OfferDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -22,6 +25,18 @@ export default function OfferDetailPage() {
     },
     enabled: !!id,
   })
+
+  // Fetch all help requests for matching
+  const { data: allRequests = [] } = useQuery({
+    queryKey: ['helpRequests'],
+    queryFn: () => requestsService.getAll(),
+  })
+
+  // Calculate matching requests
+  const matchingRequests = useMemo(() => {
+    if (!offer || !allRequests || allRequests.length === 0) return []
+    return findMatchingRequests(offer, allRequests, 5)
+  }, [offer, allRequests])
 
   const isOwner = user && offer && user.id === offer.donor_id
 
@@ -249,6 +264,121 @@ export default function OfferDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Matching Requests Section */}
+        {matchingRequests.length > 0 && (
+          <div className="mt-8 bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">
+                {t('matching.matchingRequests')} 📝
+              </h2>
+              <Link
+                to="/requests"
+                className="text-primary-600 hover:text-primary-700 text-sm font-semibold"
+              >
+                {t('matching.viewAllRequests')} →
+              </Link>
+            </div>
+
+            <p className="text-gray-600 mb-6">
+              {t('matching.matchingRequestsDescription')}
+            </p>
+
+            <div className="space-y-4">
+              {matchingRequests.map(({ request, score, reasons }) => {
+                const quality = getMatchQuality(score)
+                const getPriorityColor = (priority: string) => {
+                  switch (priority) {
+                    case 'urgent':
+                      return 'bg-red-100 text-red-800'
+                    case 'high':
+                      return 'bg-orange-100 text-orange-800'
+                    case 'medium':
+                      return 'bg-yellow-100 text-yellow-800'
+                    default:
+                      return 'bg-green-100 text-green-800'
+                  }
+                }
+
+                return (
+                  <Link
+                    key={request.id}
+                    to={`/requests/${request.id}`}
+                    className="block border border-gray-200 rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                          {request.title}
+                        </h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${quality.bgColor} ${quality.color}`}>
+                            {quality.label}
+                          </span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(request.priority)}`}>
+                            {t(`priority.${request.priority}`)}
+                          </span>
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                            {t(`categories.${request.category}`)}
+                          </span>
+                          <span className="text-sm text-gray-600 flex items-center">
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            </svg>
+                            {request.location.city}
+                          </span>
+                        </div>
+                        {request.vulnerable_categories && request.vulnerable_categories.length > 0 && (
+                          <div className="mt-2">
+                            <VulnerableCategoryBadges categories={request.vulnerable_categories} />
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-right ml-4">
+                        <div className="text-2xl font-bold text-primary-600">
+                          {score}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {t('matching.matchScore')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-700 text-sm mb-3 line-clamp-2">
+                      {request.description}
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-2">
+                          <span className="text-xs font-semibold text-primary-600">
+                            {request.beneficiary?.first_name?.[0] || 'B'}
+                          </span>
+                        </div>
+                        <span>
+                          {request.beneficiary?.first_name} {request.beneficiary?.last_name}
+                        </span>
+                      </div>
+
+                      <div className="text-sm text-gray-500">
+                        {reasons.slice(0, 2).join(' • ')}
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+
+            <div className="mt-6 text-center">
+              <Link
+                to="/requests"
+                className="btn-primary inline-block"
+              >
+                {t('matching.browseMoreRequests')}
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Back Button */}
         <div className="mt-6">

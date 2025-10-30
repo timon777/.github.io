@@ -350,5 +350,16 @@
     "hotline": "Hotline",
     "copyright": "All rights reserved. Platform does not handle finances.",
     "developedBy": "Website development"
+  },
+  "matching": {
+    "matchingOffers": "Matching Offers",
+    "matchingRequests": "Matching Requests",
+    "viewAllOffers": "All Offers",
+    "viewAllRequests": "All Requests",
+    "matchingOffersDescription": "These offers best match your request by category, location, and priority",
+    "matchingRequestsDescription": "These requests best match your offer by category, location, and priority",
+    "matchScore": "Match",
+    "browseMoreOffers": "Browse More Offers",
+    "browseMoreRequests": "Browse More Requests"
   }
 }
