@@ -416,7 +416,7 @@
   },
   "reviews": {
     "title": "Отзывы",
-    "writeReview": "Написать отзыв для",
+    "writeReview": "Написать отзыв",
     "overallRating": "Общая оценка",
     "detailedRatings": "Детальные оценки",
     "communication": "Общение",
@@ -436,7 +436,10 @@
     "noReviews": "Пока нет отзывов",
     "beFirst": "Будьте первым!",
     "forRequest": "К запросу",
-    "forOffer": "К предложению"
+    "forOffer": "К предложению",
+    "cannotReviewSelf": "Вы не можете оставить отзыв самому себе",
+    "reviewFor": "Отзыв для",
+    "leaveReview": "Оставить отзыв"
   },
   "verification": {
     "title": "Верификация",
@@ -457,13 +460,16 @@
     "expired": "Истекла",
     "documents": "Документы",
     "uploadDocuments": "Загрузите документы",
+    "documentsHelp": "Загрузите удостоверение личности, регистрационные документы или другие подтверждающие документы",
     "fullName": "Полное имя",
     "organizationName": "Название организации",
     "registrationNumber": "ИНН/БИН",
-    "description": "Описание",
+    "description": "Подайте заявку на верификацию для повышения доверия",
     "website": "Веб-сайт",
     "submitting": "Отправка...",
     "submit": "Отправить заявку",
-    "errorSubmitting": "Ошибка при отправке заявки"
+    "errorSubmitting": "Ошибка при отправке заявки",
+    "requestSubmitted": "Заявка отправлена! Мы рассмотрим её в ближайшее время",
+    "alreadyVerified": "Ваш аккаунт уже верифицирован"
   }
 }

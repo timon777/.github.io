@@ -416,7 +416,7 @@
   },
   "reviews": {
     "title": "Reviews",
-    "writeReview": "Write a review for",
+    "writeReview": "Write a review",
     "overallRating": "Overall Rating",
     "detailedRatings": "Detailed Ratings",
     "communication": "Communication",
@@ -436,7 +436,10 @@
     "noReviews": "No reviews yet",
     "beFirst": "Be the first!",
     "forRequest": "For request",
-    "forOffer": "For offer"
+    "forOffer": "For offer",
+    "cannotReviewSelf": "You cannot review yourself",
+    "reviewFor": "Review for",
+    "leaveReview": "Leave a Review"
   },
   "verification": {
     "title": "Verification",
@@ -457,13 +460,16 @@
     "expired": "Expired",
     "documents": "Documents",
     "uploadDocuments": "Upload documents",
+    "documentsHelp": "Upload ID, registration documents, or other supporting documents",
     "fullName": "Full Name",
     "organizationName": "Organization Name",
-    "registrationNumber": "Registration Number",
-    "description": "Description",
+    "registrationNumber": "Registration Number/TIN",
+    "description": "Apply for verification to increase trust",
     "website": "Website",
     "submitting": "Submitting...",
-    "submit": "Submit Request",
-    "errorSubmitting": "Error submitting request"
+    "submit": "Submit Application",
+    "errorSubmitting": "Error submitting application",
+    "requestSubmitted": "Application submitted! We will review it shortly",
+    "alreadyVerified": "Your account is already verified"
   }
 }

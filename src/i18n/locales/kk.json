@@ -436,7 +436,10 @@
     "noReviews": "Әзірге пікірлер жоқ",
     "beFirst": "Бірінші болыңыз!",
     "forRequest": "Өтініш үшін",
-    "forOffer": "Ұсыныс үшін"
+    "forOffer": "Ұсыныс үшін",
+    "cannotReviewSelf": "Өзіңізге пікір қалдыра алмайсыз",
+    "reviewFor": "Пікір",
+    "leaveReview": "Пікір қалдыру"
   },
   "verification": {
     "title": "Верификация",
@@ -449,21 +452,24 @@
     "organization": "Ұйым",
     "business": "Бизнес",
     "government": "Мемлекеттік ұйым",
-    "status": "Мәртебе",
-    "pending": "Қарастыруда",
-    "underReview": "Тексерілуде",
-    "approved": "Бекітілді",
+    "status": "Статус",
+    "pending": "Қарауда",
+    "underReview": "Қаралуда",
+    "approved": "Мақұлданды",
     "rejected": "Қабылданбады",
     "expired": "Мерзімі өтті",
     "documents": "Құжаттар",
-    "uploadDocuments": "Құжаттарды жүктеңіз",
+    "uploadDocuments": "Құжаттарды жүктеу",
+    "documentsHelp": "Жеке куәлік, тіркеу құжаттары немесе басқа растайтын құжаттарды жүктеңіз",
     "fullName": "Толық аты-жөні",
     "organizationName": "Ұйым атауы",
     "registrationNumber": "ЖСН/БСН",
-    "description": "Сипаттама",
+    "description": "Сенімді арттыру үшін верификация өтіңіз",
     "website": "Веб-сайт",
-    "submitting": "Жіберу...",
+    "submitting": "Жіберілуде...",
     "submit": "Өтінім жіберу",
-    "errorSubmitting": "Өтінім жіберу қатесі"
+    "errorSubmitting": "Өтінім жіберу қатесі",
+    "requestSubmitted": "Өтінім жіберілді! Жақын арада қарастырамыз",
+    "alreadyVerified": "Сіздің аккаунтыңыз әлдеқашан верификацияланған"
   }
 }

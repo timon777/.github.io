@@ -19,6 +19,8 @@ import MessagesPage from './pages/MessagesPage'
 import BeneficiaryDashboard from './pages/BeneficiaryDashboard'
 import DonorDashboard from './pages/DonorDashboard'
 import AdminDashboard from './pages/AdminDashboard'
+import WriteReviewPage from './pages/WriteReviewPage'
+import VerificationRequestPage from './pages/VerificationRequestPage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -82,6 +84,22 @@ function App() {
           element={
             <ProtectedRoute>
               <MessagesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="reviews/write/:userId"
+          element={
+            <ProtectedRoute>
+              <WriteReviewPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="verification/request"
+          element={
+            <ProtectedRoute>
+              <VerificationRequestPage />
             </ProtectedRoute>
           }
         />
