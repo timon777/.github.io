@@ -230,7 +230,7 @@ export default function RequestDetailPage() {
                     {request.beneficiary?.verified && <VerifiedBadge verified={true} />}
                   </div>
                   <p className="text-gray-600">
-                    {t(`roles.${request.beneficiary?.role}`)}
+                    {t('requests.beneficiary')}
                   </p>
                 </div>
               </div>

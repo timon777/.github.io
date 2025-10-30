@@ -213,7 +213,7 @@ export default function OfferDetailPage() {
                     {offer.donor?.verified && <VerifiedBadge verified={true} />}
                   </div>
                   <p className="text-gray-600 mb-3">
-                    {t(`roles.${offer.donor?.role}`)}
+                    {t('registry.donor')}
                   </p>
 
                   {/* Contact Info */}
