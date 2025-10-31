@@ -21,6 +21,7 @@ import DonorDashboard from './pages/DonorDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import WriteReviewPage from './pages/WriteReviewPage'
 import VerificationRequestPage from './pages/VerificationRequestPage'
+import AdminVerificationPage from './pages/AdminVerificationPage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -126,6 +127,14 @@ function App() {
           element={
             <ProtectedRoute requireRoles={['admin']}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="admin/verification"
+          element={
+            <ProtectedRoute requireRoles={['admin']}>
+              <AdminVerificationPage />
             </ProtectedRoute>
           }
         />

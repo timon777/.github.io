@@ -19,7 +19,12 @@
     "success": "Успешно",
     "verified": "Верифицирован",
     "optional": "опционально",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "all": "Все",
+    "view": "Просмотр",
+    "refresh": "Обновить",
+    "created": "Создано",
+    "loginRequired": "Требуется вход"
   },
   "nav": {
     "home": "Главная",
@@ -470,6 +475,21 @@
     "submit": "Отправить заявку",
     "errorSubmitting": "Ошибка при отправке заявки",
     "requestSubmitted": "Заявка отправлена! Мы рассмотрим её в ближайшее время",
-    "alreadyVerified": "Ваш аккаунт уже верифицирован"
+    "alreadyVerified": "Ваш аккаунт уже верифицирован",
+    "adminDescription": "Просмотр и обработка запросов на верификацию",
+    "totalRequests": "Всего запросов",
+    "noRequests": "Нет запросов на верификацию",
+    "requestDetails": "Детали запроса",
+    "reviewInfo": "Информация о проверке",
+    "reviewedBy": "Проверил",
+    "reviewedAt": "Дата проверки",
+    "rejectionReason": "Причина отклонения",
+    "rejectionReasonRequired": "Укажите причину отклонения",
+    "rejectionReasonPlaceholder": "Опишите почему запрос отклоняется...",
+    "approve": "Одобрить",
+    "reject": "Отклонить"
+  },
+  "admin": {
+    "panel": "Админ панель"
   }
 }
