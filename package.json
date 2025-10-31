@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "kill-port": "lsof -ti:3000 | xargs kill -9 || true"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
