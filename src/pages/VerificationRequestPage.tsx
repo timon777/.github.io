@@ -20,12 +20,8 @@ export default function VerificationRequestPage() {
   const [documents, setDocuments] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleDocumentUpload = (url: string) => {
-    setDocuments([...documents, url])
-  }
-
-  const handleDocumentRemove = (url: string) => {
-    setDocuments(documents.filter(doc => doc !== url))
+  const handleDocumentUpload = (urls: string[]) => {
+    setDocuments(urls)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -239,33 +235,11 @@ export default function VerificationRequestPage() {
                 {t('verification.documentsHelp')}
               </p>
               <ImageUpload
+                folder="requests"
                 onUpload={handleDocumentUpload}
                 maxFiles={5}
-                bucket="verification-documents"
+                existingImages={documents}
               />
-
-              {documents.length > 0 && (
-                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {documents.map((url, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={url}
-                        alt={`Document ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleDocumentRemove(url)}
-                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Submit Button */}
