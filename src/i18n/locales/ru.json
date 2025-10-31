@@ -25,7 +25,9 @@
     "refresh": "Обновить",
     "created": "Создано",
     "loginRequired": "Требуется вход",
-    "comingSoon": "Скоро будет доступно"
+    "comingSoon": "Скоро будет доступно",
+    "submitting": "Отправка...",
+    "saving": "Сохранение..."
   },
   "nav": {
     "home": "Главная",
@@ -493,9 +495,69 @@
   },
   "admin": {
     "panel": "Админ панель",
-    "users": "Управление пользователями"
+    "users": "Управление пользователями",
+    "backToDashboard": "Вернуться к панели"
   },
   "moderation": {
-    "title": "Модерация"
+    "title": "Модерация",
+    "adminDescription": "Просмотр и обработка жалоб",
+    "report": "Пожаловаться",
+    "reportContent": "Пожаловаться на контент",
+    "reason": "Причина",
+    "description": "Описание",
+    "descriptionPlaceholder": "Опишите проблему подробно...",
+    "descriptionHint": "Пожалуйста, укажите конкретные детали",
+    "descriptionRequired": "Описание обязательно",
+    "submit": "Отправить жалобу",
+    "reportSubmitted": "Жалоба отправлена",
+    "status": "Статус",
+    "contentType": "Тип контента",
+    "pending": "Ожидает",
+    "underReview": "На рассмотрении",
+    "resolved": "Решено",
+    "dismissed": "Отклонено",
+    "reporter": "Автор жалобы",
+    "reported": "Обжалуемый",
+    "reviewedBy": "Проверил",
+    "action": "Действие",
+    "flagDetails": "Детали жалобы",
+    "noFlags": "Нет жалоб",
+    "takeAction": "Принять меры",
+    "actionNote": "Примечание",
+    "actionNotePlaceholder": "Добавьте примечание о принятом решении...",
+    "dismiss": "Отклонить",
+    "approve": "Одобрить",
+    "alreadyProcessed": "Эта жалоба уже обработана",
+    "reasons": {
+      "spam": "Спам",
+      "inappropriate": "Неприемлемое содержание",
+      "harassment": "Домогательства",
+      "fraud": "Мошенничество",
+      "false_info": "Ложная информация",
+      "other": "Другое"
+    },
+    "contentTypes": {
+      "request": "Запрос",
+      "offer": "Предложение",
+      "review": "Отзыв",
+      "user": "Пользователь"
+    },
+    "actions": {
+      "approved": "Одобрено",
+      "rejected": "Отклонено"
+    }
+  },
+  "profile": {
+    "editProfile": "Редактировать профиль",
+    "editDescription": "Обновите информацию о себе",
+    "avatar": "Аватар",
+    "avatarHint": "Загрузите фото профиля",
+    "bio": "О себе",
+    "bioPlaceholder": "Расскажите о себе...",
+    "accountInfo": "Информация об аккаунте",
+    "accountInfoHint": "Email и роль можно изменить только через поддержку",
+    "memberSince": "Участник с",
+    "updateSuccess": "Профиль обновлен",
+    "nameRequired": "Имя и фамилия обязательны"
   }
 }

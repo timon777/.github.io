@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { reviewsService } from '../services/supabase'
+import { useAuthStore } from '../stores/authStore'
+import ModerationFlagForm from './ModerationFlagForm'
 import { Review } from '../types'
 
 interface ReviewsListProps {
@@ -11,9 +13,11 @@ interface ReviewsListProps {
 
 export default function ReviewsList({ userId, showAddButton = false, onAddReview }: ReviewsListProps) {
   const { t } = useTranslation()
+  const { user } = useAuthStore()
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<{ avg: number; count: number }>({ avg: 0, count: 0 })
+  const [reportingReview, setReportingReview] = useState<Review | null>(null)
 
   useEffect(() => {
     loadReviews()
@@ -152,10 +156,30 @@ export default function ReviewsList({ userId, showAddButton = false, onAddReview
                   </div>
                 </div>
 
-                {/* Rating */}
-                <div className="flex items-center space-x-2">
-                  {renderStars(review.rating, 'md')}
-                  <span className="text-lg font-semibold text-gray-900">{review.rating}.0</span>
+                <div className="flex items-center gap-3">
+                  {/* Rating */}
+                  <div className="flex items-center space-x-2">
+                    {renderStars(review.rating, 'md')}
+                    <span className="text-lg font-semibold text-gray-900">{review.rating}.0</span>
+                  </div>
+
+                  {/* Report Button */}
+                  {user && user.id !== review.reviewer_id && (
+                    <button
+                      onClick={() => setReportingReview(review)}
+                      className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                      title={t('moderation.report')}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -200,6 +224,17 @@ export default function ReviewsList({ userId, showAddButton = false, onAddReview
             </div>
           ))}
         </div>
+      )}
+
+      {/* Moderation Report Form */}
+      {reportingReview && (
+        <ModerationFlagForm
+          contentType="review"
+          contentId={reportingReview.id}
+          reportedUserId={reportingReview.reviewer_id}
+          onSuccess={() => setReportingReview(null)}
+          onCancel={() => setReportingReview(null)}
+        />
       )}
     </div>
   )

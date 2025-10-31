@@ -82,9 +82,9 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                <button className="mt-6 w-full btn-outline">
+                <Link to="/profile/edit" className="mt-6 w-full btn-outline block text-center">
                   Редактировать профиль
-                </button>
+                </Link>
 
                 {!user.verified && (
                   <Link to="/verification/request" className="mt-3 w-full btn-primary block text-center">

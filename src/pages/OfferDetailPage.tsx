@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +8,7 @@ import { useRoleAccess } from '../hooks/useRoleAccess'
 import VerifiedBadge from '../components/VerifiedBadge'
 import UserRating from '../components/UserRating'
 import VulnerableCategoryBadges from '../components/VulnerableCategoryBadges'
+import ModerationFlagForm from '../components/ModerationFlagForm'
 import { findMatchingRequests, getMatchQuality } from '../utils/matchingSystem'
 
 export default function OfferDetailPage() {
@@ -16,6 +17,7 @@ export default function OfferDetailPage() {
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const { canCreateRequests } = useRoleAccess()
+  const [showReportForm, setShowReportForm] = useState(false)
 
   const { data: offer, isLoading } = useQuery({
     queryKey: ['donorOffer', id],
@@ -301,6 +303,20 @@ export default function OfferDetailPage() {
                       </svg>
                       <span>{t('reviews.leaveReview')}</span>
                     </Link>
+                    <button
+                      onClick={() => setShowReportForm(true)}
+                      className="btn-outline flex items-center space-x-2 text-red-600 border-red-300 hover:bg-red-50"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                      </svg>
+                      <span>{t('moderation.report')}</span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -448,6 +464,17 @@ export default function OfferDetailPage() {
           </Link>
         </div>
       </div>
+
+      {/* Moderation Report Form */}
+      {showReportForm && offer && (
+        <ModerationFlagForm
+          contentType="offer"
+          contentId={offer.id}
+          reportedUserId={offer.donor_id}
+          onSuccess={() => setShowReportForm(false)}
+          onCancel={() => setShowReportForm(false)}
+        />
+      )}
     </div>
   )
 }

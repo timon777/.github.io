@@ -22,6 +22,8 @@ import AdminDashboard from './pages/AdminDashboard'
 import WriteReviewPage from './pages/WriteReviewPage'
 import VerificationRequestPage from './pages/VerificationRequestPage'
 import AdminVerificationPage from './pages/AdminVerificationPage'
+import AdminModerationPage from './pages/AdminModerationPage'
+import EditProfilePage from './pages/EditProfilePage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -81,6 +83,14 @@ function App() {
           }
         />
         <Route
+          path="profile/edit"
+          element={
+            <ProtectedRoute>
+              <EditProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="messages"
           element={
             <ProtectedRoute>
@@ -135,6 +145,14 @@ function App() {
           element={
             <ProtectedRoute requireRoles={['admin']}>
               <AdminVerificationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="admin/moderation"
+          element={
+            <ProtectedRoute requireRoles={['admin']}>
+              <AdminModerationPage />
             </ProtectedRoute>
           }
         />

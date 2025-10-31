@@ -160,7 +160,7 @@ export default function AdminDashboard() {
 
             <Link
               to="/admin/moderation"
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-2 border-transparent hover:border-primary-500 opacity-50 pointer-events-none"
+              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-2 border-transparent hover:border-primary-500"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-2xl">
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-lg">{t('moderation.title')}</h3>
-                  <p className="text-sm text-gray-600">{t('common.comingSoon')}</p>
+                  <p className="text-sm text-gray-600">{t('moderation.adminDescription')}</p>
                 </div>
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
