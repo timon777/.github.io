@@ -22,19 +22,21 @@ TO authenticated
 WITH CHECK (bucket_id = 'images');
 
 -- Политика: любой аутентифицированный пользователь может обновлять свои файлы
+-- ИСПРАВЛЕНО: используем auth.uid() = owner вместо auth.uid()::text = owner
 CREATE POLICY "Users can update their own images"
 ON storage.objects
 FOR UPDATE
 TO authenticated
-USING (bucket_id = 'images' AND auth.uid()::text = owner)
+USING (bucket_id = 'images' AND auth.uid() = owner)
 WITH CHECK (bucket_id = 'images');
 
 -- Политика: любой аутентифицированный пользователь может удалять свои файлы
+-- ИСПРАВЛЕНО: используем auth.uid() = owner вместо auth.uid()::text = owner
 CREATE POLICY "Users can delete their own images"
 ON storage.objects
 FOR DELETE
 TO authenticated
-USING (bucket_id = 'images' AND auth.uid()::text = owner);
+USING (bucket_id = 'images' AND auth.uid() = owner);
 
 -- Политика: все могут читать публичные изображения
 CREATE POLICY "Public images are accessible to all"
