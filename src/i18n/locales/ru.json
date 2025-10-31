@@ -24,7 +24,8 @@
     "view": "Просмотр",
     "refresh": "Обновить",
     "created": "Создано",
-    "loginRequired": "Требуется вход"
+    "loginRequired": "Требуется вход",
+    "comingSoon": "Скоро будет доступно"
   },
   "nav": {
     "home": "Главная",
@@ -343,7 +344,8 @@
       "urgentRequests": "Срочных заявок",
       "pendingResponses": "Ожидающих откликов",
       "recentRequests": "Недавние заявки",
-      "recentOffers": "Недавние предложения"
+      "recentOffers": "Недавние предложения",
+      "adminTools": "Инструменты администратора"
     }
   },
   "footer": {
@@ -490,6 +492,10 @@
     "reject": "Отклонить"
   },
   "admin": {
-    "panel": "Админ панель"
+    "panel": "Админ панель",
+    "users": "Управление пользователями"
+  },
+  "moderation": {
+    "title": "Модерация"
   }
 }
