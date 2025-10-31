@@ -22,7 +22,7 @@ export default function EditProfilePage() {
     if (user) {
       setFirstName(user.first_name || '')
       setLastName(user.last_name || '')
-      setPhoneNumber(user.phone_number || '')
+      setPhoneNumber(user.phone || '')
       setBio(user.bio || '')
       setAvatarUrl(user.avatar_url || '')
     }
@@ -51,7 +51,7 @@ export default function EditProfilePage() {
       const updates = {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
-        phone_number: phoneNumber.trim() || null,
+        phone: phoneNumber.trim() || null,
         bio: bio.trim() || null,
         avatar_url: avatarUrl || null,
         updated_at: new Date().toISOString(),
