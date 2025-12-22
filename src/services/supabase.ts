@@ -353,60 +353,6 @@ export const sheltersService = {
   },
 }
 
-// Responses service
-export const responsesService = {
-  async create(responseData: any) {
-    if (isDemoMode) {
-      console.log('✅ Demo: создан отклик', responseData)
-      return { id: 'demo-response-new', ...responseData, created_at: new Date().toISOString() }
-    }
-
-    const { data, error } = await supabase!
-      .from('responses')
-      .insert(responseData)
-      .select()
-      .single()
-
-    if (error) throw error
-    return data
-  },
-
-  async update(id: string, updates: any) {
-    if (isDemoMode) {
-      console.log('✅ Demo: обновлен отклик', id, updates)
-      return { id, ...updates }
-    }
-
-    const { data, error } = await supabase!
-      .from('responses')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) throw error
-    return data
-  },
-
-  async getByRequestId(requestId: string) {
-    if (isDemoMode) {
-      return []
-    }
-
-    const { data, error } = await supabase!
-      .from('responses')
-      .select(`
-        *,
-        donor:users!responses_donor_id_fkey(*)
-      `)
-      .eq('request_id', requestId)
-      .order('created_at', { ascending: false })
-
-    if (error) throw error
-    return data
-  },
-}
-
 // Locations service
 export const locationsService = {
   async create(locationData: any) {
