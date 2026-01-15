@@ -11,5 +11,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    strictPort: true, // Не переключаться на другой порт, если 3000 занят
+    host: true, // Разрешить доступ извне (опционально)
   },
 })

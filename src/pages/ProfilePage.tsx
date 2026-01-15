@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
+import ReviewsList from '../components/ReviewsList'
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user)
@@ -80,9 +82,15 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                <button className="mt-6 w-full btn-outline">
+                <Link to="/profile/edit" className="mt-6 w-full btn-outline block text-center">
                   Редактировать профиль
-                </button>
+                </Link>
+
+                {!user.verified && (
+                  <Link to="/verification/request" className="mt-3 w-full btn-primary block text-center">
+                    🔒 Пройти верификацию
+                  </Link>
+                )}
               </div>
             </div>
           </div>
@@ -182,6 +190,11 @@ export default function ProfilePage() {
                   <div className="font-semibold text-sm">Заблокировано</div>
                 </div>
               </div>
+            </div>
+
+            {/* Reviews */}
+            <div className="card">
+              <ReviewsList userId={user.id} />
             </div>
           </div>
         </div>

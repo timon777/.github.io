@@ -15,9 +15,15 @@ import SheltersPage from './pages/SheltersPage'
 import VolunteersPage from './pages/VolunteersPage'
 import MapPage from './pages/MapPage'
 import RegistryPage from './pages/RegistryPage'
+import MessagesPage from './pages/MessagesPage'
 import BeneficiaryDashboard from './pages/BeneficiaryDashboard'
 import DonorDashboard from './pages/DonorDashboard'
 import AdminDashboard from './pages/AdminDashboard'
+import WriteReviewPage from './pages/WriteReviewPage'
+import VerificationRequestPage from './pages/VerificationRequestPage'
+import AdminVerificationPage from './pages/AdminVerificationPage'
+import AdminModerationPage from './pages/AdminModerationPage'
+import EditProfilePage from './pages/EditProfilePage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -76,6 +82,38 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="profile/edit"
+          element={
+            <ProtectedRoute>
+              <EditProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="messages"
+          element={
+            <ProtectedRoute>
+              <MessagesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="reviews/write/:userId"
+          element={
+            <ProtectedRoute>
+              <WriteReviewPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="verification/request"
+          element={
+            <ProtectedRoute>
+              <VerificationRequestPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Dashboard routes */}
         <Route
@@ -99,6 +137,22 @@ function App() {
           element={
             <ProtectedRoute requireRoles={['admin']}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="admin/verification"
+          element={
+            <ProtectedRoute requireRoles={['admin']}>
+              <AdminVerificationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="admin/moderation"
+          element={
+            <ProtectedRoute requireRoles={['admin']}>
+              <AdminModerationPage />
             </ProtectedRoute>
           }
         />

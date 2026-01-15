@@ -174,3 +174,158 @@ export interface DonorOffer {
   updated_at: string
   expires_at?: string // срок действия объявления
 }
+
+// Notification types (Этап 1)
+export type NotificationType =
+  | 'response_received'      // Получен отклик на ваш запрос
+  | 'response_accepted'      // Ваш отклик принят
+  | 'response_rejected'      // Ваш отклик отклонен
+  | 'request_status_changed' // Статус запроса изменен
+  | 'offer_status_changed'   // Статус предложения изменен
+  | 'new_message'            // Новое сообщение в чате
+  | 'request_matched'        // Найдено подходящее предложение
+  | 'offer_matched'          // Найден подходящий запрос
+  | 'verification_approved'  // Верификация одобрена
+  | 'verification_rejected'  // Верификация отклонена
+  | 'system'                 // Системное уведомление
+
+// Notification
+export interface Notification {
+  id: string
+  user_id: string
+  type: NotificationType
+  title: string
+  message: string
+  link?: string
+  read: boolean
+  request_id?: string
+  offer_id?: string
+  response_id?: string
+  from_user_id?: string
+  from_user?: User // populated from join
+  created_at: string
+}
+
+// Chat
+export interface Chat {
+  id: string
+  user1_id: string
+  user2_id: string
+  user1?: User // populated from join
+  user2?: User // populated from join
+  request_id?: string
+  offer_id?: string
+  request?: HelpRequest // populated from join
+  offer?: DonorOffer // populated from join
+  last_message_at: string
+  created_at: string
+  unread_count?: number // calculated on frontend
+}
+
+// Message
+export interface Message {
+  id: string
+  chat_id: string
+  sender_id: string
+  sender?: User // populated from join
+  content: string
+  read: boolean
+  attachments?: string[]
+  created_at: string
+}
+
+// Verification types (Этап 2)
+export type VerificationType = 'individual' | 'organization' | 'business' | 'government'
+export type VerificationStatus = 'pending' | 'under_review' | 'approved' | 'rejected' | 'expired'
+
+// Verification Request
+export interface VerificationRequest {
+  id: string
+  user_id: string
+  type: VerificationType
+  status: VerificationStatus
+
+  // Personal/Organization info
+  full_name?: string
+  organization_name?: string
+  registration_number?: string
+  phone: string
+  email: string
+  address?: string
+
+  // Documents
+  documents?: string[]
+
+  // Additional info
+  description?: string
+  website?: string
+
+  // Review
+  reviewed_by?: string
+  reviewer?: User
+  reviewed_at?: string
+  rejection_reason?: string
+
+  // Expiration
+  verified_until?: string
+
+  created_at: string
+  updated_at: string
+}
+
+// Review/Rating (Этап 2)
+export interface Review {
+  id: string
+  reviewer_id: string
+  reviewee_id: string
+  reviewer?: User
+  reviewee?: User
+
+  // Context
+  request_id?: string
+  offer_id?: string
+  response_id?: string
+  request?: HelpRequest
+  offer?: DonorOffer
+
+  // Rating
+  rating: number // 1-5
+  comment?: string
+
+  // Detailed ratings
+  communication_rating?: number
+  reliability_rating?: number
+  quality_rating?: number
+
+  // Moderation
+  is_visible: boolean
+  moderated_by?: string
+  moderator?: User
+  moderation_reason?: string
+
+  created_at: string
+  updated_at: string
+}
+
+// Moderation (Этап 2)
+export type ModerationContentType = 'help_request' | 'donor_offer' | 'review' | 'user_profile' | 'message'
+export type ModerationReason = 'spam' | 'inappropriate' | 'fraud' | 'harassment' | 'misinformation' | 'other'
+
+export interface ModerationFlag {
+  id: string
+  content_type: ModerationContentType
+  content_id: string
+
+  reporter_id?: string
+  reporter?: User
+  reason: ModerationReason
+  description?: string
+
+  status: VerificationStatus
+  reviewed_by?: string
+  reviewer?: User
+  reviewed_at?: string
+  action_taken?: string
+
+  created_at: string
+}

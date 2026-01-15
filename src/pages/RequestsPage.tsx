@@ -8,9 +8,12 @@ import { HelpRequest, HelpCategory, RequestStatus, Priority } from '../types'
 import { useLocationStore } from '../stores/locationStore'
 import { useEmergencyStore } from '../stores/emergencyStore'
 import { sortByPriority, calculatePriorityScore } from '../utils/priorityCalculator'
+import { filterRequests, sortRequests, type FilterOptions } from '../utils/filterUtils'
 import VerifiedBadge from '../components/VerifiedBadge'
 import VulnerableCategoryBadges from '../components/VulnerableCategoryBadges'
 import EmergencyToggle from '../components/EmergencyToggle'
+import SearchBar from '../components/SearchBar'
+import AdvancedFilters from '../components/AdvancedFilters'
 
 type ViewMode = 'grid' | 'table'
 
@@ -18,6 +21,10 @@ export default function RequestsPage() {
   const { t } = useTranslation()
   const { selectedCity } = useLocationStore()
   const { isEmergencyMode } = useEmergencyStore()
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filters, setFilters] = useState<FilterOptions>({
+    sortBy: 'date_desc',
+  })
   const [selectedCategory, setSelectedCategory] = useState<HelpCategory | 'all'>('all')
   const [selectedStatus, setSelectedStatus] = useState<RequestStatus | 'all'>('all')
   const [selectedPriority, setSelectedPriority] = useState<Priority | 'all'>('all')
@@ -50,7 +57,7 @@ export default function RequestsPage() {
     },
   })
 
-  // Фильтрация по городу и автоматическая сортировка по приоритету
+  // Фильтрация, поиск и сортировка
   const requests = useMemo(() => {
     if (!allRequests) return []
 
@@ -62,9 +69,27 @@ export default function RequestsPage() {
       )
     }
 
-    // Автоматически сортируем по приоритету (с учетом экстренного режима)
-    return sortByPriority(filtered, isEmergencyMode)
-  }, [allRequests, selectedCity, isEmergencyMode])
+    // Применяем поиск и продвинутые фильтры
+    filtered = filterRequests(filtered, searchQuery, filters)
+
+    // Сортировка
+    if (filters.sortBy) {
+      if (filters.sortBy.includes('priority')) {
+        // Если сортируем по приоритету, используем специальную функцию с учетом экстренного режима
+        filtered = sortByPriority(filtered, isEmergencyMode)
+        if (filters.sortBy === 'priority_asc') {
+          filtered = filtered.reverse()
+        }
+      } else {
+        filtered = sortRequests(filtered, filters.sortBy)
+      }
+    } else {
+      // По умолчанию - по приоритету
+      filtered = sortByPriority(filtered, isEmergencyMode)
+    }
+
+    return filtered
+  }, [allRequests, selectedCity, isEmergencyMode, searchQuery, filters])
 
   // Функция переключения вида
   const handleViewModeChange = (mode: ViewMode) => {
@@ -88,16 +113,22 @@ export default function RequestsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-yellow-100 text-yellow-800'
       case 'approved':
-        return 'bg-green-100 text-green-800'
+        return 'bg-blue-100 text-blue-800'
       case 'in_progress':
         return 'bg-purple-100 text-purple-800'
       case 'completed':
-        return 'bg-gray-100 text-gray-800'
-      default:
+        return 'bg-green-100 text-green-800'
+      case 'rejected':
         return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
+  }
+
+  const getStatusLabel = (status: string) => {
+    return t(`status.${status}`)
   }
 
   return (
@@ -152,64 +183,23 @@ export default function RequestsPage() {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('registry.category')}
-              </label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value as any)}
-                className="input-field"
-              >
-                <option value="all">{t('categories.all')}</option>
-                <option value="food">{t('categories.food')}</option>
-                <option value="clothing">{t('categories.clothing')}</option>
-                <option value="medicine">{t('categories.medicine')}</option>
-                <option value="household">{t('categories.household')}</option>
-                <option value="transport">{t('categories.transport')}</option>
-                <option value="animal_care">{t('categories.animal_care')}</option>
-                <option value="medical_service">{t('categories.medical_service')}</option>
-                <option value="legal_service">{t('categories.legal_service')}</option>
-                <option value="psychological_service">{t('categories.psychological_service')}</option>
-              </select>
-            </div>
+        {/* Search Bar */}
+        <div className="mb-6">
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder={t('filters.searchPlaceholder')}
+          />
+        </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('requests.priority')}
-              </label>
-              <select
-                value={selectedPriority}
-                onChange={(e) => setSelectedPriority(e.target.value as any)}
-                className="input-field"
-              >
-                <option value="all">{t('requests.allPriorities')}</option>
-                <option value="urgent">{t('requests.urgent')}</option>
-                <option value="high">{t('requests.high')}</option>
-                <option value="medium">{t('requests.medium')}</option>
-                <option value="low">{t('requests.low')}</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('registry.status')}
-              </label>
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value as any)}
-                className="input-field"
-              >
-                <option value="all">{t('requests.allStatuses')}</option>
-                <option value="open">{t('requests.open')}</option>
-                <option value="in_progress">{t('requests.inProgress')}</option>
-                <option value="closed">{t('requests.closed')}</option>
-              </select>
-            </div>
-          </div>
+        {/* Advanced Filters */}
+        <div className="mb-8">
+          <AdvancedFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            showPriorityFilter={true}
+            showDistanceSort={false}
+          />
         </div>
 
         {/* Requests List */}
@@ -228,7 +218,7 @@ export default function RequestsPage() {
                       {t(`requests.${request.priority}`)}
                     </span>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(request.status)}`}>
-                      {request.status === 'open' ? t('requests.open') : request.status === 'in_progress' ? t('requests.inProgress') : t('requests.closed')}
+                      {getStatusLabel(request.status)}
                     </span>
                   </div>
 
@@ -327,7 +317,7 @@ export default function RequestsPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(request.status)}`}>
-                          {request.status === 'open' ? t('requests.open') : request.status === 'in_progress' ? t('requests.inProgress') : t('requests.closed')}
+                          {getStatusLabel(request.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
